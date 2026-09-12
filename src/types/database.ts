@@ -42,6 +42,8 @@ export type Database = {
   public: {
     Tables: {
       profiles: {
+        // Sin relaciones declaradas: las consultas anidadas se tipan a mano.
+        Relationships: []
         Row: {
           id: string
           username: string
@@ -63,6 +65,8 @@ export type Database = {
       }
 
       categories: {
+        // Sin relaciones declaradas: las consultas anidadas se tipan a mano.
+        Relationships: []
         Row: {
           id: string
           user_id: string
@@ -85,6 +89,8 @@ export type Database = {
       }
 
       transactions: {
+        // Sin relaciones declaradas: las consultas anidadas se tipan a mano.
+        Relationships: []
         Row: {
           id: string
           user_id: string
@@ -126,6 +132,8 @@ export type Database = {
       }
 
       debts: {
+        // Sin relaciones declaradas: las consultas anidadas se tipan a mano.
+        Relationships: []
         Row: {
           id: string
           user_id: string
@@ -158,6 +166,8 @@ export type Database = {
       }
 
       debt_payments: {
+        // Sin relaciones declaradas: las consultas anidadas se tipan a mano.
+        Relationships: []
         Row: {
           id: string
           debt_id: string
@@ -181,6 +191,8 @@ export type Database = {
       }
 
       funds: {
+        // Sin relaciones declaradas: las consultas anidadas se tipan a mano.
+        Relationships: []
         Row: {
           id: string
           user_id: string
@@ -209,6 +221,8 @@ export type Database = {
       }
 
       fund_movements: {
+        // Sin relaciones declaradas: las consultas anidadas se tipan a mano.
+        Relationships: []
         Row: {
           id: string
           fund_id: string
@@ -235,12 +249,27 @@ export type Database = {
       }
     }
 
+    // Sin vistas por ahora, pero la clave debe existir: supabase-js exige
+    // la forma completa del esquema para poder inferir los tipos.
+    Views: Record<string, never>
+
     Functions: {
       seed_demo_data: {
         Args: { p_email: string; p_reset?: boolean }
         Returns: string
       }
     }
+
+    Enums: {
+      user_role: UserRole
+      transaction_type: TransactionType
+      expense_type: ExpenseType
+      debt_status: DebtStatus
+      fund_type: FundType
+      fund_movement_type: FundMovementType
+    }
+
+    CompositeTypes: Record<string, never>
   }
 }
 
