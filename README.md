@@ -63,8 +63,50 @@ El archivo `.env` está ignorado por Git.
 
 1. Crea un proyecto en [supabase.com](https://supabase.com) (plan gratuito).
 2. Copia la URL y la `anon key` desde **Project Settings → API** a tu `.env`.
-3. Ejecuta las migraciones de `supabase/migrations/` en orden, desde el
-   **SQL Editor** del panel de Supabase.
+3. Abre **SQL Editor → New query** y ejecuta, en este orden:
+   - `supabase/migrations/001_initial_schema.sql`
+   - `supabase/migrations/002_rls_policies.sql`
+   - `supabase/migrations/003_seed_data.sql`
+4. Regístrate en la aplicación y luego carga los datos de prueba:
+   ```sql
+   select public.seed_demo_data('tu-correo@ejemplo.com');
+   ```
+
+`000_reset.sql` borra todo el esquema para reconstruirlo desde cero. Es
+destructivo y solo debe usarse en desarrollo; no toca las cuentas de
+`auth.users`.
+
+## Base de datos
+
+```
+auth.users ──1:1── profiles
+                      │
+        ┌─────────────┼──────────────┬──────────────┐
+        │             │              │              │
+   categories ──1:N── transactions  debts         funds
+                                     │              │
+                               debt_payments  fund_movements
+```
+
+Puntos de diseño que vale la pena conocer antes de tocar el esquema:
+
+- **El mes no es una tabla.** `transactions` guarda la fecha exacta en una
+  columna `DATE`, y `year`/`month` son columnas `GENERATED ALWAYS` que
+  PostgreSQL calcula desde ella. Al ser generadas no pueden desincronizarse.
+- **El dinero es `NUMERIC(14,2)`**, nunca `FLOAT`. Los montos son siempre
+  positivos; el signo lo determina `type`.
+- **Una clave foránea compuesta** `(category_id, type) → categories (id, type)`
+  impide registrar un gasto en una categoría de ingreso.
+- **`debts.paid_amount` y `funds.current_amount` los mantienen triggers**
+  a partir de `debt_payments` y `fund_movements`. Además, la base de datos
+  revoca el permiso de escritura sobre esas columnas, así que no se pueden
+  alterar desde la API sin registrar el movimiento correspondiente.
+- **RLS filtra por `auth.uid()`** en las siete tablas. `debt_payments` y
+  `fund_movements` no tienen `user_id`: heredan la pertenencia de su deuda o
+  fondo mediante un `EXISTS`, para no duplicar el dato y arriesgar que se
+  desincronice.
+- **El rol `ADMIN` no da acceso a las finanzas de otros usuarios.** La
+  privacidad tiene prioridad; el rol servirá para funciones administrativas.
 
 ## Scripts
 
@@ -106,7 +148,7 @@ lanzan consultas directamente.
 ## Estado del desarrollo
 
 - [x] **Fase 1** — Proyecto, Tailwind, Supabase, estructura
-- [ ] **Fase 2** — Esquema de base de datos, relaciones, RLS, migraciones
+- [x] **Fase 2** — Esquema de base de datos, relaciones, RLS, migraciones
 - [ ] **Fase 3** — Autenticación y rutas protegidas
 - [ ] **Fase 4** — Dashboard con selector de mes y gráficos
 - [ ] **Fase 5** — Registro de ingresos y gastos (CRUD)
