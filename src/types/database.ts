@@ -42,7 +42,8 @@ export type Database = {
   public: {
     Tables: {
       profiles: {
-        // Sin relaciones declaradas: las consultas anidadas se tipan a mano.
+        // Su única clave foránea apunta a auth.users, que es un esquema
+        // gestionado por Supabase y no forma parte de estos tipos.
         Relationships: []
         Row: {
           id: string
@@ -65,8 +66,15 @@ export type Database = {
       }
 
       categories: {
-        // Sin relaciones declaradas: las consultas anidadas se tipan a mano.
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: 'categories_user_id_fkey'
+            columns: ['user_id']
+            isOneToOne: false
+            referencedRelation: 'profiles'
+            referencedColumns: ['id']
+          },
+        ]
         Row: {
           id: string
           user_id: string
@@ -89,8 +97,25 @@ export type Database = {
       }
 
       transactions: {
-        // Sin relaciones declaradas: las consultas anidadas se tipan a mano.
-        Relationships: []
+        Relationships: [
+          {
+            // Clave foránea compuesta: la categoría debe coincidir en id y
+            // en tipo, para que un gasto no pueda usar una categoría de
+            // ingreso. Ver 001_initial_schema.sql.
+            foreignKeyName: 'transactions_category_fk'
+            columns: ['category_id', 'type']
+            isOneToOne: false
+            referencedRelation: 'categories'
+            referencedColumns: ['id', 'type']
+          },
+          {
+            foreignKeyName: 'transactions_user_id_fkey'
+            columns: ['user_id']
+            isOneToOne: false
+            referencedRelation: 'profiles'
+            referencedColumns: ['id']
+          },
+        ]
         Row: {
           id: string
           user_id: string
@@ -132,8 +157,15 @@ export type Database = {
       }
 
       debts: {
-        // Sin relaciones declaradas: las consultas anidadas se tipan a mano.
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: 'debts_user_id_fkey'
+            columns: ['user_id']
+            isOneToOne: false
+            referencedRelation: 'profiles'
+            referencedColumns: ['id']
+          },
+        ]
         Row: {
           id: string
           user_id: string
@@ -166,8 +198,15 @@ export type Database = {
       }
 
       debt_payments: {
-        // Sin relaciones declaradas: las consultas anidadas se tipan a mano.
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: 'debt_payments_debt_id_fkey'
+            columns: ['debt_id']
+            isOneToOne: false
+            referencedRelation: 'debts'
+            referencedColumns: ['id']
+          },
+        ]
         Row: {
           id: string
           debt_id: string
@@ -191,8 +230,15 @@ export type Database = {
       }
 
       funds: {
-        // Sin relaciones declaradas: las consultas anidadas se tipan a mano.
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: 'funds_user_id_fkey'
+            columns: ['user_id']
+            isOneToOne: false
+            referencedRelation: 'profiles'
+            referencedColumns: ['id']
+          },
+        ]
         Row: {
           id: string
           user_id: string
@@ -221,8 +267,15 @@ export type Database = {
       }
 
       fund_movements: {
-        // Sin relaciones declaradas: las consultas anidadas se tipan a mano.
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: 'fund_movements_fund_id_fkey'
+            columns: ['fund_id']
+            isOneToOne: false
+            referencedRelation: 'funds'
+            referencedColumns: ['id']
+          },
+        ]
         Row: {
           id: string
           fund_id: string
