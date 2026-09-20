@@ -127,13 +127,16 @@ export function TransactionsPage() {
         )}
       </Card>
 
-      <TransactionForm
-        isOpen={isFormOpen}
-        onClose={() => setIsFormOpen(false)}
-        transaction={editing}
-        // Un movimiento nuevo se propone dentro del mes que se está viendo.
-        defaultDate={defaultDateForPeriod(period)}
-      />
+      {/* Se monta al abrir y se desmonta al cerrar: así cada apertura parte
+          de un formulario limpio, sin reiniciarlo a mano. */}
+      {isFormOpen && (
+        <TransactionForm
+          isOpen
+          onClose={() => setIsFormOpen(false)}
+          transaction={editing}
+          defaultDate={defaultDateForPeriod(period)}
+        />
+      )}
 
       <ConfirmDialog
         isOpen={deleting !== null}

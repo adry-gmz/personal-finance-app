@@ -153,11 +153,15 @@ export function DashboardPage() {
         </div>
       )}
 
-      <TransactionForm
-        isOpen={isFormOpen}
-        onClose={() => setIsFormOpen(false)}
-        defaultDate={defaultDateForPeriod(period)}
-      />
+      {/* Se monta al abrir y se desmonta al cerrar: así cada apertura parte
+          de un formulario limpio, sin reiniciarlo a mano. */}
+      {isFormOpen && (
+        <TransactionForm
+          isOpen
+          onClose={() => setIsFormOpen(false)}
+          defaultDate={defaultDateForPeriod(period)}
+        />
+      )}
     </>
   )
 }
