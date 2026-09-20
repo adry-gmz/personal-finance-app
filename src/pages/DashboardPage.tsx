@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { CategoryChart } from '@/components/CategoryChart'
 import { DebtProgress } from '@/components/DebtProgress'
@@ -5,12 +6,14 @@ import { FundProgress } from '@/components/FundProgress'
 import { IncomeExpenseChart } from '@/components/IncomeExpenseChart'
 import { MonthSelector } from '@/components/MonthSelector'
 import { SummaryCard } from '@/components/SummaryCard'
+import { TransactionForm } from '@/components/TransactionForm'
 import { TransactionList } from '@/components/TransactionList'
+import { Button } from '@/components/ui/Button'
 import { Card, ErrorState, LoadingState } from '@/components/ui/Card'
 import { PageHeader } from '@/components/ui/PageHeader'
 import { useDashboard } from '@/hooks/useDashboard'
 import { usePeriod } from '@/hooks/usePeriod'
-import { formatPeriod } from '@/utils/dates'
+import { defaultDateForPeriod, formatPeriod } from '@/utils/dates'
 import { formatMoney } from '@/utils/money'
 
 /**
@@ -24,6 +27,7 @@ import { formatMoney } from '@/utils/money'
  */
 export function DashboardPage() {
   const { period } = usePeriod()
+  const [isFormOpen, setIsFormOpen] = useState(false)
   const { isLoading, error, summary, transactions, yearlyTotals, funds, debts } =
     useDashboard(period)
 
@@ -32,7 +36,16 @@ export function DashboardPage() {
 
   return (
     <>
-      <PageHeader title="Finanzas" description={formatPeriod(period)} actions={<MonthSelector />} />
+      <PageHeader
+        title="Finanzas"
+        description={formatPeriod(period)}
+        actions={
+          <>
+            <MonthSelector />
+            <Button onClick={() => setIsFormOpen(true)}>+ Registrar</Button>
+          </>
+        }
+      />
 
       {error ? (
         <Card>
@@ -139,6 +152,12 @@ export function DashboardPage() {
           </Card>
         </div>
       )}
+
+      <TransactionForm
+        isOpen={isFormOpen}
+        onClose={() => setIsFormOpen(false)}
+        defaultDate={defaultDateForPeriod(period)}
+      />
     </>
   )
 }

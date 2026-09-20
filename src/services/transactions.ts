@@ -1,5 +1,10 @@
 import { supabase } from '@/lib/supabase'
-import type { TransactionWithCategory } from '@/types/database'
+import type {
+  ExpenseType,
+  Transaction,
+  TransactionType,
+  TransactionWithCategory,
+} from '@/types/database'
 import type { MonthPeriod } from '@/utils/dates'
 
 /**
@@ -95,4 +100,76 @@ export async function getYearlyTotals(year: number): Promise<MonthlyTotals[]> {
     income: incomeCents / 100,
     expense: expenseCents / 100,
   }))
+}
+
+// ---------------------------------------------------------------------------
+// Escritura
+// ---------------------------------------------------------------------------
+
+export type TransactionInput = {
+  category_id: string
+  type: TransactionType
+  /** Obligatorio en gastos, debe ser null en ingresos. */
+  expense_type: ExpenseType | null
+  description: string
+  amount: number
+  date: string
+  is_recurring: boolean
+}
+
+/**
+ * Traduce los errores de PostgreSQL a algo que el usuario entienda.
+ *
+ * Las restricciones del esquema son la última línea de defensa: el formulario
+ * ya valida antes de enviar, pero si algo se cuela, el mensaje debe explicar
+ * qué pasó en lugar de mostrar jerga de base de datos.
+ */
+function describeWriteError(code: string | undefined, fallback: string): string {
+  switch (code) {
+    case '23514': // check_violation
+      return 'Los datos no cumplen las reglas: revisa que el monto sea mayor que cero y que el tipo de gasto sea correcto.'
+    case '23503': // foreign_key_violation
+      return 'La categoría seleccionada no existe o no corresponde al tipo de movimiento.'
+    case '42501': // insufficient_privilege / RLS
+      return 'No tienes permiso para modificar este movimiento.'
+    default:
+      return fallback
+  }
+}
+
+export async function createTransaction(
+  userId: string,
+  input: TransactionInput,
+): Promise<Transaction> {
+  const { data, error } = await supabase
+    .from('transactions')
+    .insert({ ...input, user_id: userId })
+    .select()
+    .single()
+
+  if (error) throw new Error(describeWriteError(error.code, 'No se pudo guardar el movimiento.'))
+
+  return data
+}
+
+export async function updateTransaction(
+  id: string,
+  input: TransactionInput,
+): Promise<Transaction> {
+  const { data, error } = await supabase
+    .from('transactions')
+    .update(input)
+    .eq('id', id)
+    .select()
+    .single()
+
+  if (error) throw new Error(describeWriteError(error.code, 'No se pudo actualizar el movimiento.'))
+
+  return data
+}
+
+export async function deleteTransaction(id: string): Promise<void> {
+  const { error } = await supabase.from('transactions').delete().eq('id', id)
+
+  if (error) throw new Error('No se pudo eliminar el movimiento.')
 }
