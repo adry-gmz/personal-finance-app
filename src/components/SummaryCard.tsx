@@ -1,0 +1,53 @@
+import { formatMoney } from '@/utils/money'
+
+/**
+ * Cada concepto financiero tiene su propio color, definido como token en
+ * index.css. Que un ahorro nunca se vea igual que un gasto es parte del
+ * objetivo de la aplicación, no una decoración.
+ */
+type Tone = 'income' | 'expense' | 'balance' | 'saving' | 'provision' | 'debt'
+
+const TONES: Record<Tone, { value: string; dot: string }> = {
+  income: { value: 'text-income', dot: 'bg-income' },
+  expense: { value: 'text-expense', dot: 'bg-expense' },
+  balance: { value: 'text-slate-900', dot: 'bg-slate-900' },
+  saving: { value: 'text-saving', dot: 'bg-saving' },
+  provision: { value: 'text-provision', dot: 'bg-provision' },
+  debt: { value: 'text-debt', dot: 'bg-debt' },
+}
+
+export function SummaryCard({
+  label,
+  amount,
+  tone,
+  caption,
+  /** Muestra el signo del monto. Se usa en el balance, que puede ser negativo. */
+  showSign = false,
+}: {
+  label: string
+  amount: number
+  tone: Tone
+  caption?: string
+  showSign?: boolean
+}) {
+  const styles = TONES[tone]
+
+  // Un balance negativo se pinta en rojo aunque su tono sea neutro:
+  // es la información más importante de la tarjeta.
+  const valueColor = showSign && amount < 0 ? 'text-expense' : styles.value
+
+  const formatted = showSign && amount > 0 ? `+${formatMoney(amount)}` : formatMoney(amount)
+
+  return (
+    <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+      <div className="flex items-center gap-2">
+        <span aria-hidden className={`size-2 rounded-full ${styles.dot}`} />
+        <p className="text-sm text-slate-500">{label}</p>
+      </div>
+      <p className={`mt-2 text-2xl font-semibold tracking-tight tabular-nums ${valueColor}`}>
+        {formatted}
+      </p>
+      {caption && <p className="mt-1 text-xs text-slate-400">{caption}</p>}
+    </div>
+  )
+}

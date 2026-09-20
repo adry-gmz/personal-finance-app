@@ -150,7 +150,7 @@ lanzan consultas directamente.
 - [x] **Fase 1** — Proyecto, Tailwind, Supabase, estructura
 - [x] **Fase 2** — Esquema de base de datos, relaciones, RLS, migraciones
 - [x] **Fase 3** — Autenticación y rutas protegidas
-- [ ] **Fase 4** — Dashboard con selector de mes y gráficos
+- [x] **Fase 4** — Dashboard con selector de mes y gráficos
 - [ ] **Fase 5** — Registro de ingresos y gastos (CRUD)
 - [ ] **Fase 6** — Deudas y pagos
 - [ ] **Fase 7** — Provisiones y ahorros

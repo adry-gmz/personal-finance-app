@@ -94,3 +94,8 @@ export function todayAsDateString(): string {
   const now = new Date()
   return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`
 }
+
+/** Nombre corto de un mes por su número (1-12): 9 -> "Sep" */
+export function shortMonthName(month: number): string {
+  return SHORT_MONTHS[month - 1] ?? ''
+}
