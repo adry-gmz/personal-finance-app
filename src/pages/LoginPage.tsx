@@ -134,7 +134,7 @@ export function LoginPage() {
                   onChange={(e) => setFullName(e.target.value)}
                   error={fieldErrors.fullName}
                   autoComplete="name"
-                  placeholder="Adriana Ayala"
+                  placeholder="Yisus Rivera"
                   disabled={isSubmitting}
                 />
                 <Input
@@ -144,7 +144,7 @@ export function LoginPage() {
                   error={fieldErrors.username}
                   hint="Así aparecerás en la aplicación."
                   autoComplete="username"
-                  placeholder="adri"
+                  placeholder="yisus"
                   disabled={isSubmitting}
                 />
               </>
@@ -157,7 +157,7 @@ export function LoginPage() {
               onChange={(e) => setEmail(e.target.value)}
               error={fieldErrors.email}
               autoComplete="email"
-              placeholder="tucorreo@ejemplo.com"
+              placeholder="yisus@ejemplo.com"
               disabled={isSubmitting}
             />
 
