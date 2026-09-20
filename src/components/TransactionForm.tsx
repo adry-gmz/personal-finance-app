@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { Alert } from '@/components/ui/Alert'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
@@ -74,23 +74,17 @@ export function TransactionForm({
   const isEditing = Boolean(transaction)
   const initialDate = defaultDate ?? todayAsDateString()
 
-  const [form, setForm] = useState<FormState>(emptyForm(initialDate))
+  // El estado se inicializa una sola vez, al montar. Quien usa este
+  // componente lo monta al abrir y lo desmonta al cerrar, así que cada
+  // apertura parte de cero sin necesidad de reiniciarlo desde un efecto.
+  const [form, setForm] = useState<FormState>(() =>
+    transaction ? formFromTransaction(transaction) : emptyForm(initialDate),
+  )
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({})
   const [formError, setFormError] = useState<string | null>(null)
 
   const { data: categories = [], isLoading: isLoadingCategories } = useCategories()
   const { create, update } = useTransactionMutations()
-
-  // Al abrirse, el formulario se reinicia: o con los datos del movimiento
-  // que se edita, o vacío. Sin esto, al cerrar y volver a abrir quedarían
-  // los valores de la vez anterior.
-  useEffect(() => {
-    if (!isOpen) return
-
-    setForm(transaction ? formFromTransaction(transaction) : emptyForm(initialDate))
-    setFieldErrors({})
-    setFormError(null)
-  }, [isOpen, transaction, initialDate])
 
   // Solo se ofrecen las categorías del tipo elegido. La base de datos lo
   // exige mediante una clave foránea compuesta, así que ofrecer las otras
