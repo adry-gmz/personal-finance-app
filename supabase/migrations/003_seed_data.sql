@@ -254,3 +254,24 @@ $$;
 
 comment on function public.seed_demo_data(text, boolean) is
   'Crea datos ficticios de desarrollo para el usuario con el correo indicado.';
+
+
+-- ============================================================================
+-- PERMISOS DE LA FUNCIÓN
+--
+-- Imprescindible. PostgreSQL concede EXECUTE a todo el mundo sobre cada
+-- función nueva, y Supabase las publica automáticamente como endpoints REST
+-- en /rest/v1/rpc/. Sin este revoke, cualquiera con la Publishable key
+-- (es decir, cualquiera que abra la aplicación) podría llamar:
+--
+--     seed_demo_data('correo-de-otro@ejemplo.com', true)
+--
+-- y borrar todos los datos financieros de ese usuario, porque la función es
+-- SECURITY DEFINER y por tanto se salta las políticas RLS.
+--
+-- Al revocarlo, solo queda accesible desde el SQL Editor, que es su único
+-- uso legítimo: sembrar datos de desarrollo.
+-- ============================================================================
+
+revoke all on function public.seed_demo_data(text, boolean)
+  from public, anon, authenticated;
