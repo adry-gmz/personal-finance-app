@@ -99,3 +99,18 @@ export function todayAsDateString(): string {
 export function shortMonthName(month: number): string {
   return SHORT_MONTHS[month - 1] ?? ''
 }
+
+/**
+ * Fecha que un formulario debe proponer al crear algo dentro de un período.
+ *
+ * Si el período es el mes actual devuelve hoy, que es lo que el usuario va a
+ * querer casi siempre. Si está revisando un mes pasado devuelve su día 1,
+ * para que el movimiento caiga en el mes que está viendo y no se le escape a
+ * otro sin darse cuenta.
+ */
+export function defaultDateForPeriod(period: MonthPeriod): string {
+  const today = currentPeriod()
+  const isCurrentMonth = period.year === today.year && period.month === today.month
+
+  return isCurrentMonth ? todayAsDateString() : periodStart(period)
+}
