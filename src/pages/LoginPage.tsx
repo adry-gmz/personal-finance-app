@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Logo } from '@/components/Logo'
 import { ThemeToggle } from '@/components/ThemeToggle'
 import { Alert } from '@/components/ui/Alert'
 import { Button } from '@/components/ui/Button'
@@ -106,17 +107,19 @@ export function LoginPage() {
   }
 
   return (
-    <main className="relative flex min-h-dvh items-center justify-center bg-canvas px-4 py-12">
+    <main className="relative flex min-h-dvh items-center justify-center px-4 py-12">
       <ThemeToggle className="absolute top-4 right-4" />
       <div className="w-full max-w-sm">
-        <div className="text-center">
-          <h1 className="text-2xl font-semibold tracking-tight text-fg">Finanzas</h1>
-          <p className="mt-1 text-sm text-fg-muted">
+        <div className="flex flex-col items-center text-center">
+          <h1>
+            <Logo />
+          </h1>
+          <p className="mt-3 text-sm text-fg-muted">
             {isSignUp ? 'Crea tu cuenta para empezar.' : 'Ingresa para ver tus finanzas.'}
           </p>
         </div>
 
-        <div className="mt-6 rounded-xl border border-line bg-surface p-6 shadow-sm">
+        <div className="card mt-6 p-6">
           {/* Selector de modo */}
           <div className="mb-6 grid grid-cols-2 gap-1 rounded-lg bg-muted p-1">
             <ModeTab active={!isSignUp} onClick={() => switchMode('signin')}>

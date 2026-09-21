@@ -3,7 +3,11 @@ import { useMemo } from 'react'
 import { getDebtPaymentsByPeriod, getDebts } from '@/services/debts'
 import { getFundMovementsByPeriod, getFunds } from '@/services/funds'
 import { getLoans, getRepaymentsByPeriod } from '@/services/loans'
-import { getTransactionsByPeriod, getYearlyTotals } from '@/services/transactions'
+import {
+  getTotalsByYears,
+  getTransactionsByPeriod,
+  getYearlyTotals,
+} from '@/services/transactions'
 import type { Debt, Fund, Loan, LoanRepayment, TransactionWithCategory } from '@/types/database'
 import type { MonthPeriod } from '@/utils/dates'
 import { sumAmounts, toCents } from '@/utils/money'
@@ -49,6 +53,11 @@ export function useDashboard(period: MonthPeriod) {
         queryKey: ['loan-repayments', period.year, period.month],
         queryFn: () => getRepaymentsByPeriod(period),
       },
+      {
+        // Comparación del año seleccionado con los dos anteriores.
+        queryKey: ['transactions', 'annual', period.year],
+        queryFn: () => getTotalsByYears([period.year - 2, period.year - 1, period.year]),
+      },
     ],
   })
 
@@ -61,6 +70,7 @@ export function useDashboard(period: MonthPeriod) {
     debtPayments,
     loans,
     loanRepayments,
+    annualTotals,
   ] = results
 
   const isLoading = results.some((result) => result.isLoading)
@@ -94,10 +104,14 @@ export function useDashboard(period: MonthPeriod) {
     summary,
     transactions: transactions.data ?? [],
     yearlyTotals: yearlyTotals.data ?? [],
+    annualTotals: annualTotals.data ?? [],
     funds: funds.data ?? [],
     debts: debts.data ?? [],
   }
 }
+
+export type DashboardSummary = ReturnType<typeof buildSummary> &
+  ReturnType<typeof buildReceivableSummary>
 
 /**
  * Dinero prestado: lo que falta por cobrar (acumulado) y lo que se cobró en

@@ -43,7 +43,7 @@ export function Modal({
         onClose()
       }}
       onClose={onClose}
-      className="m-auto w-[calc(100%-2rem)] max-w-md rounded-xl border border-line bg-surface p-0 text-fg shadow-xl backdrop:bg-black/60"
+      className="m-auto w-[calc(100%-2rem)] max-w-md rounded-2xl border border-line bg-surface p-0 text-fg shadow-2xl backdrop:bg-black/60 backdrop:backdrop-blur-sm"
     >
       <div className="flex items-center justify-between border-b border-line-subtle px-5 py-4">
         <h2 className="text-base font-semibold text-fg">{title}</h2>

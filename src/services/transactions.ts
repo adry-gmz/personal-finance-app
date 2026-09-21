@@ -173,3 +173,33 @@ export async function deleteTransaction(id: string): Promise<void> {
 
   if (error) throw new Error('No se pudo eliminar el movimiento.')
 }
+
+export type YearTotals = {
+  year: number
+  income: number
+  expense: number
+}
+
+/** Ingresos y gastos totales de varios años, para compararlos. */
+export async function getTotalsByYears(years: number[]): Promise<YearTotals[]> {
+  const { data, error } = await supabase
+    .from('transactions')
+    .select('year, type, amount')
+    .in('year', years)
+
+  if (error) throw new Error('No se pudo cargar la comparación anual.')
+
+  const totals = new Map(years.map((year) => [year, { incomeCents: 0, expenseCents: 0 }]))
+  for (const row of data) {
+    const bucket = totals.get(row.year)
+    if (!bucket) continue
+    const cents = Math.round(toNumber(row.amount) * 100)
+    if (row.type === 'INCOME') bucket.incomeCents += cents
+    else bucket.expenseCents += cents
+  }
+
+  return years.map((year) => {
+    const bucket = totals.get(year)!
+    return { year, income: bucket.incomeCents / 100, expense: bucket.expenseCents / 100 }
+  })
+}
