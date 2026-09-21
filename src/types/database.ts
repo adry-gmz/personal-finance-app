@@ -34,6 +34,11 @@ export type FundType = 'PROVISION' | 'SAVING'
 
 export type FundMovementType = 'CONTRIBUTION' | 'WITHDRAWAL'
 
+/** LOAN: préstamo. CREDIT_CARD: compra a plazos con tarjeta. */
+export type DebtType = 'LOAN' | 'CREDIT_CARD' | 'OTHER'
+
+export type LoanStatus = 'ACTIVE' | 'PAID' | 'CANCELLED'
+
 // ---------------------------------------------------------------------------
 // Esquema
 // ---------------------------------------------------------------------------
@@ -177,6 +182,11 @@ export type Database = {
           due_date: string | null
           status: DebtStatus
           created_at: string
+          debt_type: DebtType
+          /** Lo que se pidió o costó la compra. El interés = total - principal. */
+          principal_amount: number | null
+          installments: number | null
+          installment_amount: number | null
         }
         Insert: {
           id?: string
@@ -186,6 +196,10 @@ export type Database = {
           interest_rate?: number | null
           due_date?: string | null
           status?: DebtStatus
+          debt_type?: DebtType
+          principal_amount?: number | null
+          installments?: number | null
+          installment_amount?: number | null
         }
         // `paid_amount` no se incluye: la base de datos revoca su escritura.
         Update: {
@@ -194,6 +208,10 @@ export type Database = {
           interest_rate?: number | null
           due_date?: string | null
           status?: DebtStatus
+          debt_type?: DebtType
+          principal_amount?: number | null
+          installments?: number | null
+          installment_amount?: number | null
         }
       }
 
@@ -300,6 +318,90 @@ export type Database = {
           description?: string
         }
       }
+
+      loans: {
+        Relationships: [
+          {
+            foreignKeyName: 'loans_user_id_fkey'
+            columns: ['user_id']
+            isOneToOne: false
+            referencedRelation: 'profiles'
+            referencedColumns: ['id']
+          },
+        ]
+        Row: {
+          id: string
+          user_id: string
+          borrower_name: string
+          principal_amount: number
+          /** El porcentaje tal como lo acordó el usuario. */
+          interest_rate: number | null
+          /** Lo que espera recibir en total. */
+          total_amount: number
+          /** Suma de loan_repayments, mantenida por trigger. Solo lectura. */
+          received_amount: number
+          loan_date: string
+          due_date: string | null
+          status: LoanStatus
+          notes: string
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          borrower_name: string
+          principal_amount: number
+          interest_rate?: number | null
+          total_amount: number
+          loan_date?: string
+          due_date?: string | null
+          status?: LoanStatus
+          notes?: string
+        }
+        // received_amount no se incluye: la base de datos revoca su escritura.
+        Update: {
+          borrower_name?: string
+          principal_amount?: number
+          interest_rate?: number | null
+          total_amount?: number
+          loan_date?: string
+          due_date?: string | null
+          status?: LoanStatus
+          notes?: string
+        }
+      }
+
+      loan_repayments: {
+        Relationships: [
+          {
+            foreignKeyName: 'loan_repayments_loan_id_fkey'
+            columns: ['loan_id']
+            isOneToOne: false
+            referencedRelation: 'loans'
+            referencedColumns: ['id']
+          },
+        ]
+        Row: {
+          id: string
+          loan_id: string
+          amount: number
+          date: string
+          description: string
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          loan_id: string
+          amount: number
+          date?: string
+          description?: string
+        }
+        Update: {
+          amount?: number
+          date?: string
+          description?: string
+        }
+      }
     }
 
     // Sin vistas por ahora, pero la clave debe existir: supabase-js exige
@@ -320,6 +422,8 @@ export type Database = {
       debt_status: DebtStatus
       fund_type: FundType
       fund_movement_type: FundMovementType
+      debt_type: DebtType
+      loan_status: LoanStatus
     }
 
     CompositeTypes: Record<string, never>
@@ -347,6 +451,8 @@ export type DebtInsert = Tables['debts']['Insert']
 export type DebtPaymentInsert = Tables['debt_payments']['Insert']
 export type FundInsert = Tables['funds']['Insert']
 export type FundMovementInsert = Tables['fund_movements']['Insert']
+export type Loan = Tables['loans']['Row']
+export type LoanRepayment = Tables['loan_repayments']['Row']
 
 /** Transacción con su categoría resuelta, tal como la muestra la interfaz. */
 export type TransactionWithCategory = Transaction & {

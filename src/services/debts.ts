@@ -1,5 +1,5 @@
 import { supabase } from '@/lib/supabase'
-import type { Debt, DebtPayment, DebtStatus } from '@/types/database'
+import type { Debt, DebtPayment, DebtStatus, DebtType } from '@/types/database'
 import type { MonthPeriod } from '@/utils/dates'
 import { periodEnd, periodStart } from '@/utils/dates'
 
@@ -14,6 +14,8 @@ function normalizeDebt(row: Debt): Debt {
     total_amount: toNumber(row.total_amount),
     paid_amount: toNumber(row.paid_amount),
     interest_rate: row.interest_rate === null ? null : toNumber(row.interest_rate),
+    principal_amount: row.principal_amount === null ? null : toNumber(row.principal_amount),
+    installment_amount: row.installment_amount === null ? null : toNumber(row.installment_amount),
   }
 }
 
@@ -65,7 +67,11 @@ export async function getDebtPaymentsByPeriod(
 
 export type DebtInputData = {
   name: string
+  debt_type: DebtType
   total_amount: number
+  principal_amount: number | null
+  installments: number | null
+  installment_amount: number | null
   interest_rate: number | null
   due_date: string | null
   status: DebtStatus
@@ -80,7 +86,7 @@ export type DebtPaymentInputData = {
 function describeWriteError(code: string | undefined, fallback: string): string {
   switch (code) {
     case '23514':
-      return 'Los datos no cumplen las reglas: el monto debe ser mayor que cero.'
+      return 'Los datos no cumplen las reglas: los montos deben ser mayores que cero y el monto original no puede superar el total.'
     case '42501':
       return 'No tienes permiso para modificar este registro.'
     default:

@@ -12,6 +12,8 @@
 
 drop trigger if exists on_auth_user_created on auth.users;
 
+drop table if exists public.loan_repayments cascade;
+drop table if exists public.loans           cascade;
 drop table if exists public.fund_movements cascade;
 drop table if exists public.funds          cascade;
 drop table if exists public.debt_payments  cascade;
@@ -21,12 +23,16 @@ drop table if exists public.categories     cascade;
 drop table if exists public.profiles       cascade;
 
 drop function if exists public.seed_demo_data(text, boolean);
+drop function if exists public.on_loan_repayment_change();
+drop function if exists public.refresh_loan_totals(uuid);
 drop function if exists public.handle_new_user();
 drop function if exists public.on_fund_movement_change();
 drop function if exists public.refresh_fund_balance(uuid);
 drop function if exists public.on_debt_payment_change();
 drop function if exists public.refresh_debt_totals(uuid);
 
+drop type if exists public.loan_status;
+drop type if exists public.debt_type;
 drop type if exists public.fund_movement_type;
 drop type if exists public.fund_type;
 drop type if exists public.debt_status;
