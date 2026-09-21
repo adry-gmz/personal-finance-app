@@ -20,6 +20,11 @@ type FieldErrors = Partial<Record<'amount' | 'date', string>>
 export function DebtPaymentForm({ debt, onClose }: { debt: Debt; onClose: () => void }) {
   const pending = (toCents(debt.total_amount) - toCents(debt.paid_amount)) / 100
 
+  // La última cuota puede ser menor que las demás: nunca se propone pagar
+  // más de lo que falta.
+  const installmentShortcut =
+    debt.installment_amount !== null ? Math.min(debt.installment_amount, pending) : null
+
   const [amount, setAmount] = useState('')
   const [date, setDate] = useState(todayAsDateString())
   const [description, setDescription] = useState('')
@@ -102,15 +107,27 @@ export function DebtPaymentForm({ debt, onClose }: { debt: Debt; onClose: () => 
           />
         </div>
 
-        {/* Atajo para liquidar la deuda sin calcular el monto a mano */}
-        <button
-          type="button"
-          onClick={() => setAmount(pending.toFixed(2))}
-          disabled={isSaving}
-          className="text-sm font-medium text-fg-muted transition-colors hover:text-fg"
-        >
-          Pagar el total pendiente
-        </button>
+        {/* Atajos para no calcular el monto a mano */}
+        <div className="flex flex-wrap gap-x-4 gap-y-1">
+          {installmentShortcut !== null && (
+            <button
+              type="button"
+              onClick={() => setAmount(installmentShortcut.toFixed(2))}
+              disabled={isSaving}
+              className="text-sm font-medium text-fg-muted transition-colors hover:text-fg"
+            >
+              Pagar una cuota ({formatMoney(installmentShortcut)})
+            </button>
+          )}
+          <button
+            type="button"
+            onClick={() => setAmount(pending.toFixed(2))}
+            disabled={isSaving}
+            className="text-sm font-medium text-fg-muted transition-colors hover:text-fg"
+          >
+            Pagar el total pendiente
+          </button>
+        </div>
 
         <Input
           label="Descripción"

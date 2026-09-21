@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { DebtForm } from '@/components/DebtForm'
+import { DEBT_TYPE_LABELS } from '@/utils/labels'
 import { DebtPaymentForm } from '@/components/DebtPaymentForm'
 import { EditIcon, TrashIcon } from '@/components/Icons'
 import { SummaryCard } from '@/components/SummaryCard'
@@ -212,16 +213,34 @@ function DebtCard({
   const percent = progressPercent(debt.paid_amount, debt.total_amount)
   const pending = pendingOf(debt)
 
+  // El interés en dinero solo se conoce si se guardó el monto original.
+  const interest =
+    debt.principal_amount !== null
+      ? (toCents(debt.total_amount) - toCents(debt.principal_amount)) / 100
+      : null
+
+  // Cuotas cubiertas con lo pagado hasta ahora. Es una estimación: si se
+  // hicieron abonos de montos distintos a la cuota, cuenta cuotas enteras.
+  const installmentsPaid =
+    debt.installment_amount !== null
+      ? Math.floor(toCents(debt.paid_amount) / toCents(debt.installment_amount))
+      : null
+
   return (
     <Card>
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
           <h3 className="truncate font-medium text-fg">{debt.name}</h3>
-          <span
-            className={`mt-1 inline-block rounded-full px-2 py-0.5 text-xs font-medium ${status.className}`}
-          >
-            {status.label}
-          </span>
+          <div className="mt-1 flex flex-wrap gap-1.5">
+            <span
+              className={`rounded-full px-2 py-0.5 text-xs font-medium ${status.className}`}
+            >
+              {status.label}
+            </span>
+            <span className="rounded-full bg-muted px-2 py-0.5 text-xs font-medium text-fg-muted">
+              {DEBT_TYPE_LABELS[debt.debt_type]}
+            </span>
+          </div>
         </div>
         <div className="flex shrink-0 gap-0.5">
           <IconButton onClick={() => onEdit(debt)} label={`Editar ${debt.name}`}>
@@ -250,13 +269,23 @@ function DebtCard({
         barClassName={debt.status === 'PAID' ? 'bg-income' : 'bg-debt'}
       />
 
-      <dl className="mt-4 grid grid-cols-3 gap-2 text-xs">
+      <dl className="mt-4 grid grid-cols-2 gap-2 text-xs sm:grid-cols-4">
         <Detail label="Pendiente" value={formatMoney(pending)} />
-        <Detail label="Vence" value={debt.due_date ? formatDate(debt.due_date) : '—'} />
+        <Detail
+          label="Cuota"
+          value={debt.installment_amount !== null ? formatMoney(debt.installment_amount) : '—'}
+          caption={
+            installmentsPaid !== null && debt.installments !== null
+              ? `${Math.min(installmentsPaid, debt.installments)} de ${debt.installments} pagadas`
+              : undefined
+          }
+        />
         <Detail
           label="Interés"
-          value={debt.interest_rate !== null ? `${debt.interest_rate}%` : '—'}
+          value={interest !== null ? formatMoney(interest) : '—'}
+          caption={debt.interest_rate !== null ? `${debt.interest_rate}%` : undefined}
         />
+        <Detail label="Vence" value={debt.due_date ? formatDate(debt.due_date) : '—'} />
       </dl>
 
       <div className="mt-4 flex items-center justify-between gap-3">
@@ -320,11 +349,12 @@ function PaymentHistory({
   )
 }
 
-function Detail({ label, value }: { label: string; value: string }) {
+function Detail({ label, value, caption }: { label: string; value: string; caption?: string }) {
   return (
     <div className="rounded-lg bg-muted px-2.5 py-2">
       <dt className="text-fg-muted">{label}</dt>
       <dd className="mt-0.5 truncate font-medium text-fg tabular-nums">{value}</dd>
+      {caption && <dd className="truncate text-fg-subtle">{caption}</dd>}
     </div>
   )
 }
