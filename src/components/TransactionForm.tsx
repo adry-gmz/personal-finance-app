@@ -3,6 +3,7 @@ import { Alert } from '@/components/ui/Alert'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
 import { Modal } from '@/components/ui/Modal'
+import { Segmented } from '@/components/ui/Segmented'
 import { Select } from '@/components/ui/Select'
 import { useCategories, useTransactionMutations } from '@/hooks/useTransactions'
 import type { TransactionInput } from '@/services/transactions'
@@ -207,16 +208,23 @@ export function TransactionForm({
 
         {/* Fijo o variable solo aplica a los gastos */}
         {form.type === 'EXPENSE' && (
-          <Select
-            label="Tipo de gasto"
-            value={form.expenseType}
-            onChange={(e) => setField('expenseType', e.target.value as ExpenseType)}
-            hint="Fijo se repite cada mes; variable depende del consumo."
-            disabled={isSaving}
-          >
-            <option value="VARIABLE">Variable</option>
-            <option value="FIXED">Fijo</option>
-          </Select>
+          <div>
+            {/* Dos opciones: botones en vez de lista desplegable, que en
+                móvil abre el selector del sistema para elegir entre solo dos. */}
+            <Segmented<ExpenseType>
+              label="Tipo de gasto"
+              options={[
+                { value: 'VARIABLE', label: 'Variable' },
+                { value: 'FIXED', label: 'Fijo' },
+              ]}
+              value={form.expenseType}
+              onChange={(value) => setField('expenseType', value)}
+              disabled={isSaving}
+            />
+            <p className="mt-1.5 text-sm text-fg-muted">
+              Fijo se repite cada mes; variable depende del consumo.
+            </p>
+          </div>
         )}
 
         <div className="grid grid-cols-2 gap-3">
