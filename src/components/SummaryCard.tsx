@@ -33,14 +33,14 @@ export function SummaryCard({
 }) {
   const styles = TONES[tone]
 
-  // Un balance negativo se pinta en rojo aunque su tono sea neutro:
+  // Un balance negativo se pinta en tono de alerta aunque su tono sea neutro:
   // es la información más importante de la tarjeta.
-  const valueColor = showSign && amount < 0 ? 'text-expense' : styles.value
+  const valueColor = showSign && amount < 0 ? 'text-debt' : styles.value
 
   const formatted = showSign && amount > 0 ? `+${formatMoney(amount)}` : formatMoney(amount)
 
   return (
-    <div className="rounded-xl border border-line bg-surface p-4 shadow-sm">
+    <div className="card p-4">
       <div className="flex items-center gap-2">
         <span aria-hidden className={`size-2 rounded-full ${styles.dot}`} />
         <p className="text-sm text-fg-muted">{label}</p>

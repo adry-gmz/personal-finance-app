@@ -1,5 +1,5 @@
 import { usePeriod } from '@/hooks/usePeriod'
-import { formatPeriod } from '@/utils/dates'
+import { addMonths, formatPeriod, shortMonthName } from '@/utils/dates'
 
 function ChevronIcon({ direction }: { direction: 'left' | 'right' }) {
   return (
@@ -19,52 +19,63 @@ function ChevronIcon({ direction }: { direction: 'left' | 'right' }) {
 }
 
 /**
- * Navegación entre meses.
+ * Navegación entre meses: anterior, actual (resaltado) y siguiente.
  *
  * El mes seleccionado vive en la URL (ver usePeriod), no aquí dentro. Este
  * componente solo lo muestra y dispara los cambios.
  */
 export function MonthSelector() {
-  const { period, goToPreviousMonth, goToNextMonth, goToCurrentMonth, isCurrentMonth } =
+  const { period, setPeriod, goToPreviousMonth, goToNextMonth, goToCurrentMonth, isCurrentMonth } =
     usePeriod()
 
+  const previous = addMonths(period, -1)
+  const next = addMonths(period, 1)
+
+  const neighbour =
+    'hidden rounded-full px-2.5 py-1 text-sm text-fg-subtle transition-colors hover:text-fg sm:block'
+
   return (
-    <div className="flex items-center gap-2">
-      <div className="flex items-center rounded-lg bg-surface ring-1 ring-line ring-inset">
-        <button
-          type="button"
-          onClick={goToPreviousMonth}
-          className="rounded-l-lg px-2.5 py-2 text-fg-muted transition-colors hover:bg-muted hover:text-fg"
-          aria-label="Mes anterior"
-        >
-          <ChevronIcon direction="left" />
-        </button>
+    <div className="flex items-center gap-1">
+      <button
+        type="button"
+        onClick={goToPreviousMonth}
+        className="rounded-full p-1.5 text-fg-muted transition-colors hover:bg-muted hover:text-fg"
+        aria-label="Mes anterior"
+      >
+        <ChevronIcon direction="left" />
+      </button>
 
-        {/* aria-live avisa a los lectores de pantalla del cambio de mes,
-            que de otro modo pasaría desapercibido. */}
-        <span
-          aria-live="polite"
-          className="min-w-38 px-1 text-center text-sm font-medium text-fg"
-        >
-          {formatPeriod(period)}
-        </span>
+      <button type="button" onClick={() => setPeriod(previous)} className={neighbour}>
+        {shortMonthName(previous.month)}
+      </button>
 
-        <button
-          type="button"
-          onClick={goToNextMonth}
-          className="rounded-r-lg px-2.5 py-2 text-fg-muted transition-colors hover:bg-muted hover:text-fg"
-          aria-label="Mes siguiente"
-        >
-          <ChevronIcon direction="right" />
-        </button>
-      </div>
+      {/* aria-live avisa a los lectores de pantalla del cambio de mes. */}
+      <span
+        aria-live="polite"
+        className="rounded-full bg-primary/15 px-3.5 py-1 text-sm font-semibold whitespace-nowrap text-fg ring-1 ring-primary/60 ring-inset"
+      >
+        {formatPeriod(period)}
+      </span>
+
+      <button type="button" onClick={() => setPeriod(next)} className={neighbour}>
+        {shortMonthName(next.month)}
+      </button>
+
+      <button
+        type="button"
+        onClick={goToNextMonth}
+        className="rounded-full p-1.5 text-fg-muted transition-colors hover:bg-muted hover:text-fg"
+        aria-label="Mes siguiente"
+      >
+        <ChevronIcon direction="right" />
+      </button>
 
       {/* Atajo de vuelta: al navegar varios meses es fácil perderse. */}
       {!isCurrentMonth && (
         <button
           type="button"
           onClick={goToCurrentMonth}
-          className="rounded-lg px-2.5 py-2 text-sm font-medium text-fg-muted transition-colors hover:bg-muted hover:text-fg"
+          className="ml-1 rounded-full px-2.5 py-1 text-sm font-medium text-fg-muted ring-1 ring-line transition-colors ring-inset hover:text-fg"
         >
           Hoy
         </button>
