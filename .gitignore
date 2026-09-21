@@ -31,3 +31,6 @@ dist-ssr
 # Supabase CLI
 supabase/.temp
 supabase/.branches
+
+# Configuracion local de herramientas
+.claude/
