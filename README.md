@@ -4,7 +4,7 @@ Aplicación web de finanzas personales. Permite registrar ingresos y gastos,
 consultar las finanzas mes a mes, administrar deudas, provisiones y ahorros,
 y visualizar todo en un dashboard con gráficos.
 
-> Proyecto de portafolio. Los datos de ejemplo son ficticios.
+>  Los datos de ejemplo son ficticios.
 
 ## Conceptos
 
