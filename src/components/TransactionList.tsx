@@ -1,4 +1,6 @@
+import { EditIcon, TrashIcon } from '@/components/Icons'
 import { EmptyState } from '@/components/ui/Card'
+import { IconButton } from '@/components/ui/IconButton'
 import type { TransactionWithCategory } from '@/types/database'
 import { formatDayMonth } from '@/utils/dates'
 import { formatSignedMoney } from '@/utils/money'
@@ -74,7 +76,7 @@ export function TransactionList({
                     onClick={() => onEdit(transaction)}
                     label={`Editar ${transaction.description || 'movimiento'}`}
                   >
-                    <EditIcon />
+                    <EditIcon className="size-4" />
                   </IconButton>
                 )}
                 {onDelete && (
@@ -83,7 +85,7 @@ export function TransactionList({
                     label={`Eliminar ${transaction.description || 'movimiento'}`}
                     className="hover:text-red-600"
                   >
-                    <TrashIcon />
+                    <TrashIcon className="size-4" />
                   </IconButton>
                 )}
               </div>
@@ -95,63 +97,3 @@ export function TransactionList({
   )
 }
 
-function IconButton({
-  onClick,
-  label,
-  className = '',
-  children,
-}: {
-  onClick: () => void
-  label: string
-  className?: string
-  children: React.ReactNode
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      aria-label={label}
-      className={`rounded-lg p-1.5 text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-900 ${className}`}
-    >
-      {children}
-    </button>
-  )
-}
-
-function EditIcon() {
-  return (
-    <svg
-      className="size-4"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.75"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden
-    >
-      <path d="M4 20h4L19 9a2.1 2.1 0 0 0-3-3L5 17z" />
-      <path d="M14.5 6.5l3 3" />
-    </svg>
-  )
-}
-
-function TrashIcon() {
-  return (
-    <svg
-      className="size-4"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.75"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden
-    >
-      <path d="M4 7h16" />
-      <path d="M10 11v6M14 11v6" />
-      <path d="M6 7l1 13h10l1-13" />
-      <path d="M9 7V4h6v3" />
-    </svg>
-  )
-}
