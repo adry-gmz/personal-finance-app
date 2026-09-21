@@ -10,7 +10,7 @@ type Tone = 'income' | 'expense' | 'balance' | 'saving' | 'provision' | 'debt'
 const TONES: Record<Tone, { value: string; dot: string }> = {
   income: { value: 'text-income', dot: 'bg-income' },
   expense: { value: 'text-expense', dot: 'bg-expense' },
-  balance: { value: 'text-slate-900', dot: 'bg-slate-900' },
+  balance: { value: 'text-fg', dot: 'bg-fg' },
   saving: { value: 'text-saving', dot: 'bg-saving' },
   provision: { value: 'text-provision', dot: 'bg-provision' },
   debt: { value: 'text-debt', dot: 'bg-debt' },
@@ -39,15 +39,15 @@ export function SummaryCard({
   const formatted = showSign && amount > 0 ? `+${formatMoney(amount)}` : formatMoney(amount)
 
   return (
-    <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+    <div className="rounded-xl border border-line bg-surface p-4 shadow-sm">
       <div className="flex items-center gap-2">
         <span aria-hidden className={`size-2 rounded-full ${styles.dot}`} />
-        <p className="text-sm text-slate-500">{label}</p>
+        <p className="text-sm text-fg-muted">{label}</p>
       </div>
       <p className={`mt-2 text-2xl font-semibold tracking-tight tabular-nums ${valueColor}`}>
         {formatted}
       </p>
-      {caption && <p className="mt-1 text-xs text-slate-400">{caption}</p>}
+      {caption && <p className="mt-1 text-xs text-fg-subtle">{caption}</p>}
     </div>
   )
 }

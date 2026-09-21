@@ -1,16 +1,106 @@
 @import 'tailwindcss';
 
 /*
- * Tokens de la aplicación.
- * Cada concepto financiero tiene su propio color para que el usuario
- * nunca confunda un gasto con dinero apartado (ahorro / provisión).
+ * `dark:` se activa con la clase .dark en <html>, no con la preferencia del
+ * sistema: el usuario elige el tema con el botón y la elección se guarda.
  */
-@theme {
-  --color-income: oklch(0.62 0.15 155);
-  --color-expense: oklch(0.6 0.19 25);
-  --color-saving: oklch(0.58 0.16 255);
-  --color-provision: oklch(0.68 0.15 75);
-  --color-debt: oklch(0.55 0.19 320);
+@custom-variant dark (&:where(.dark, .dark *));
+
+/*
+ * Colores semánticos.
+ *
+ * Los componentes nunca usan un color fijo como "slate-900": usan su
+ * función ("texto principal", "superficie", "borde"). Cada tema decide qué
+ * color concreto le corresponde, así que cambiar de tema es cambiar estas
+ * variables y nada más.
+ */
+:root {
+  /* Superficies */
+  --canvas: #e9edee;
+  --surface: #ffffff;
+  --muted: #f1f4f5;
+  --raised: #ffffff;
+  --line: #d3d9db;
+  --line-subtle: #e6ebec;
+
+  /* Texto */
+  --fg: #06141b;
+  --fg-secondary: #253745;
+  --fg-muted: #4a5c6a;
+  --fg-subtle: #7d8a8e;
+
+  /* Acción principal */
+  --primary: #11212d;
+  --primary-hover: #253745;
+  --primary-fg: #ffffff;
+
+  /*
+   * Conceptos financieros. Cada uno tiene su color para que un ahorro
+   * nunca se vea igual que un gasto.
+   */
+  --income: oklch(0.56 0.14 162);
+  --expense: oklch(0.58 0.19 25);
+  --saving: oklch(0.55 0.15 245);
+  --provision: oklch(0.64 0.15 70);
+  --debt: oklch(0.55 0.19 330);
+  --receivable: oklch(0.58 0.11 200);
+
+  color-scheme: light;
+}
+
+/* Paleta oscura: #06141B · #11212D · #253745 · #4A5C6A · #9BA8AB · #CCD0CF */
+.dark {
+  --canvas: #06141b;
+  --surface: #11212d;
+  --muted: #0b1a24;
+  --raised: #253745;
+  --line: #253745;
+  --line-subtle: #1a2c39;
+
+  --fg: #dde2e1;
+  --fg-secondary: #b4bfc1;
+  --fg-muted: #9ba8ab;
+  --fg-subtle: #6f8189;
+
+  --primary: #4fd1e8;
+  --primary-hover: #7adcee;
+  --primary-fg: #06141b;
+
+  /* Más luminosos: sobre fondo oscuro los tonos del tema claro se apagan. */
+  --income: oklch(0.78 0.14 165);
+  --expense: oklch(0.72 0.16 25);
+  --saving: oklch(0.74 0.13 235);
+  --provision: oklch(0.82 0.13 80);
+  --debt: oklch(0.72 0.16 330);
+  --receivable: oklch(0.8 0.11 195);
+
+  /* Selects, calendarios y barras de scroll nativos también en oscuro. */
+  color-scheme: dark;
+}
+
+@theme inline {
+  --color-canvas: var(--canvas);
+  --color-surface: var(--surface);
+  --color-muted: var(--muted);
+  --color-raised: var(--raised);
+  --color-line: var(--line);
+  --color-line-subtle: var(--line-subtle);
+
+  --color-fg: var(--fg);
+  --color-fg-secondary: var(--fg-secondary);
+  --color-fg-muted: var(--fg-muted);
+  --color-fg-subtle: var(--fg-subtle);
+
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-fg: var(--primary-fg);
+
+  --color-income: var(--income);
+  --color-expense: var(--expense);
+  --color-saving: var(--saving);
+  --color-provision: var(--provision);
+  --color-debt: var(--debt);
+  --color-receivable: var(--receivable);
 }
 
 html {
@@ -18,5 +108,5 @@ html {
 }
 
 body {
-  @apply bg-slate-50 text-slate-900 antialiased;
+  @apply bg-canvas text-fg antialiased;
 }

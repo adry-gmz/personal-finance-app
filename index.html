@@ -6,6 +6,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="Aplicación de finanzas personales: ingresos, gastos, deudas, provisiones y ahorros." />
     <title>Finanzas</title>
+    <script>
+      // Aplica el tema antes de pintar la página para evitar un destello
+      // del tema equivocado. Oscuro por defecto, salvo que se eligiera claro.
+      try {
+        if (localStorage.getItem('theme') !== 'light') document.documentElement.classList.add('dark')
+      } catch (e) {
+        document.documentElement.classList.add('dark')
+      }
+    </script>
   </head>
   <body>
     <div id="root"></div>

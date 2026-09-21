@@ -9,7 +9,7 @@ import { useAuth } from '@/hooks/useAuth'
  */
 function SessionLoading() {
   return (
-    <div className="flex min-h-dvh items-center justify-center text-slate-400">
+    <div className="flex min-h-dvh items-center justify-center text-fg-subtle">
       <Spinner className="size-6" />
       <span className="sr-only">Cargando sesión…</span>
     </div>

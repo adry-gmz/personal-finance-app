@@ -79,7 +79,7 @@ export function TransactionsPage() {
 
       <Card>
         <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-          <div className="flex gap-1 rounded-lg bg-slate-100 p-1">
+          <div className="flex gap-1 rounded-lg bg-muted p-1">
             {(Object.keys(FILTER_LABELS) as Filter[]).map((option) => (
               <button
                 key={option}
@@ -88,8 +88,8 @@ export function TransactionsPage() {
                 aria-pressed={filter === option}
                 className={`rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
                   filter === option
-                    ? 'bg-white text-slate-900 shadow-sm'
-                    : 'text-slate-500 hover:text-slate-900'
+                    ? 'bg-raised text-fg shadow-sm'
+                    : 'text-fg-muted hover:text-fg'
                 }`}
               >
                 {FILTER_LABELS[option]}
@@ -98,9 +98,9 @@ export function TransactionsPage() {
           </div>
 
           {!isLoading && visible.length > 0 && (
-            <p className="text-sm text-slate-500">
+            <p className="text-sm text-fg-muted">
               {visible.length} {visible.length === 1 ? 'movimiento' : 'movimientos'} ·{' '}
-              <span className="font-medium text-slate-900 tabular-nums">
+              <span className="font-medium text-fg tabular-nums">
                 {formatMoney(visibleTotal)}
               </span>
             </p>
@@ -151,7 +151,7 @@ export function TransactionsPage() {
             <div className="flex items-baseline justify-between gap-3">
               <span className="truncate">
                 {deleting.description || deleting.category?.name || 'Sin descripción'}
-                <span className="block text-xs text-slate-500">{formatDate(deleting.date)}</span>
+                <span className="block text-xs text-fg-muted">{formatDate(deleting.date)}</span>
               </span>
               <span className="shrink-0 font-medium tabular-nums">
                 {formatMoney(deleting.amount)}

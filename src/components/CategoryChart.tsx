@@ -42,7 +42,9 @@ export function CategoryChart({ data, total }: { data: CategorySlice[]; total: n
               formatter={(value, name) => [formatMoney(Number(value ?? 0)), String(name)]}
               contentStyle={{
                 borderRadius: 8,
-                border: '1px solid #e2e8f0',
+                border: '1px solid var(--line)',
+                backgroundColor: 'var(--surface)',
+                color: 'var(--fg)',
                 fontSize: 13,
                 boxShadow: '0 4px 12px rgb(15 23 42 / 0.08)',
               }}
@@ -52,8 +54,8 @@ export function CategoryChart({ data, total }: { data: CategorySlice[]; total: n
 
         {/* El total va en el centro del donut, superpuesto al gráfico. */}
         <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
-          <span className="text-xs text-slate-500">Total</span>
-          <span className="text-lg font-semibold tracking-tight text-slate-900 tabular-nums">
+          <span className="text-xs text-fg-muted">Total</span>
+          <span className="text-lg font-semibold tracking-tight text-fg tabular-nums">
             {formatMoney(total)}
           </span>
         </div>
@@ -67,11 +69,11 @@ export function CategoryChart({ data, total }: { data: CategorySlice[]; total: n
               className="size-2.5 shrink-0 rounded-full"
               style={{ backgroundColor: slice.color }}
             />
-            <span className="flex-1 truncate text-slate-600">{slice.name}</span>
-            <span className="shrink-0 font-medium text-slate-900 tabular-nums">
+            <span className="flex-1 truncate text-fg-secondary">{slice.name}</span>
+            <span className="shrink-0 font-medium text-fg tabular-nums">
               {formatMoney(slice.value)}
             </span>
-            <span className="w-10 shrink-0 text-right text-xs text-slate-400 tabular-nums">
+            <span className="w-10 shrink-0 text-right text-xs text-fg-subtle tabular-nums">
               {Math.round(progressPercent(slice.value, total))}%
             </span>
           </li>

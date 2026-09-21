@@ -33,13 +33,13 @@ export function TransactionList({
   const visible = limit ? transactions.slice(0, limit) : transactions
 
   return (
-    <ul className="divide-y divide-slate-100">
+    <ul className="divide-y divide-line-subtle">
       {visible.map((transaction) => {
         const isIncome = transaction.type === 'INCOME'
 
         return (
           <li key={transaction.id} className="flex items-center gap-3 py-3 first:pt-0 last:pb-0">
-            <span className="w-12 shrink-0 text-xs text-slate-400 tabular-nums">
+            <span className="w-12 shrink-0 text-xs text-fg-subtle tabular-nums">
               {formatDayMonth(transaction.date)}
             </span>
 
@@ -50,10 +50,10 @@ export function TransactionList({
             />
 
             <div className="min-w-0 flex-1">
-              <p className="truncate text-sm font-medium text-slate-900">
+              <p className="truncate text-sm font-medium text-fg">
                 {transaction.description || transaction.category?.name || 'Sin descripción'}
               </p>
-              <p className="truncate text-xs text-slate-500">
+              <p className="truncate text-xs text-fg-muted">
                 {transaction.category?.name ?? 'Sin categoría'}
                 {transaction.expense_type === 'FIXED' && ' · Fijo'}
                 {transaction.expense_type === 'VARIABLE' && ' · Variable'}
@@ -63,7 +63,7 @@ export function TransactionList({
 
             <span
               className={`shrink-0 text-sm font-medium tabular-nums ${
-                isIncome ? 'text-income' : 'text-slate-900'
+                isIncome ? 'text-income' : 'text-fg'
               }`}
             >
               {formatSignedMoney(transaction.amount, isIncome ? 'in' : 'out')}
@@ -83,7 +83,7 @@ export function TransactionList({
                   <IconButton
                     onClick={() => onDelete(transaction)}
                     label={`Eliminar ${transaction.description || 'movimiento'}`}
-                    className="hover:text-red-600"
+                    className="hover:text-red-600 dark:hover:text-red-400"
                   >
                     <TrashIcon className="size-4" />
                   </IconButton>

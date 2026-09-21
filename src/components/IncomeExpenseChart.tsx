@@ -45,25 +45,27 @@ export function IncomeExpenseChart({
     <div className="h-64 w-full">
       <ResponsiveContainer width="100%" height="100%">
         <BarChart data={chartData} margin={{ top: 4, right: 4, bottom: 0, left: -16 }}>
-          <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
+          <CartesianGrid strokeDasharray="3 3" stroke="var(--line-subtle)" vertical={false} />
           <XAxis
             dataKey="label"
-            tick={{ fontSize: 12, fill: '#94a3b8' }}
+            tick={{ fontSize: 12, fill: 'var(--fg-subtle)' }}
             tickLine={false}
             axisLine={false}
           />
           <YAxis
-            tick={{ fontSize: 12, fill: '#94a3b8' }}
+            tick={{ fontSize: 12, fill: 'var(--fg-subtle)' }}
             tickLine={false}
             axisLine={false}
             tickFormatter={(value: number) => `$${value}`}
           />
           <Tooltip
-            cursor={{ fill: '#f8fafc' }}
+            cursor={{ fill: 'var(--muted)' }}
             formatter={(value, name) => [formatMoney(Number(value ?? 0)), String(name)]}
             contentStyle={{
               borderRadius: 8,
-              border: '1px solid #e2e8f0',
+              border: '1px solid var(--line)',
+              backgroundColor: 'var(--surface)',
+              color: 'var(--fg)',
               fontSize: 13,
               boxShadow: '0 4px 12px rgb(15 23 42 / 0.08)',
             }}
@@ -89,7 +91,7 @@ export function IncomeExpenseChart({
         </BarChart>
       </ResponsiveContainer>
 
-      <div className="mt-3 flex justify-center gap-5 text-xs text-slate-500">
+      <div className="mt-3 flex justify-center gap-5 text-xs text-fg-muted">
         <LegendItem className="bg-income">Ingresos</LegendItem>
         <LegendItem className="bg-expense">Gastos</LegendItem>
       </div>

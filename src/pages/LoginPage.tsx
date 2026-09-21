@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { ThemeToggle } from '@/components/ThemeToggle'
 import { Alert } from '@/components/ui/Alert'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
@@ -105,18 +106,19 @@ export function LoginPage() {
   }
 
   return (
-    <main className="flex min-h-dvh items-center justify-center bg-slate-50 px-4 py-12">
+    <main className="relative flex min-h-dvh items-center justify-center bg-canvas px-4 py-12">
+      <ThemeToggle className="absolute top-4 right-4" />
       <div className="w-full max-w-sm">
         <div className="text-center">
-          <h1 className="text-2xl font-semibold tracking-tight text-slate-900">Finanzas</h1>
-          <p className="mt-1 text-sm text-slate-500">
+          <h1 className="text-2xl font-semibold tracking-tight text-fg">Finanzas</h1>
+          <p className="mt-1 text-sm text-fg-muted">
             {isSignUp ? 'Crea tu cuenta para empezar.' : 'Ingresa para ver tus finanzas.'}
           </p>
         </div>
 
-        <div className="mt-6 rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+        <div className="mt-6 rounded-xl border border-line bg-surface p-6 shadow-sm">
           {/* Selector de modo */}
-          <div className="mb-6 grid grid-cols-2 gap-1 rounded-lg bg-slate-100 p-1">
+          <div className="mb-6 grid grid-cols-2 gap-1 rounded-lg bg-muted p-1">
             <ModeTab active={!isSignUp} onClick={() => switchMode('signin')}>
               Iniciar sesión
             </ModeTab>
@@ -187,7 +189,7 @@ export function LoginPage() {
           </form>
         </div>
 
-        <p className="mt-6 text-center text-xs text-slate-400">
+        <p className="mt-6 text-center text-xs text-fg-subtle">
           Proyecto de portafolio. Usa datos ficticios.
         </p>
       </div>
@@ -210,7 +212,7 @@ function ModeTab({
       onClick={onClick}
       aria-pressed={active}
       className={`rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
-        active ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-900'
+        active ? 'bg-raised text-fg shadow-sm' : 'text-fg-muted hover:text-fg'
       }`}
     >
       {children}
