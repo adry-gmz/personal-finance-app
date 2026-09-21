@@ -2,8 +2,9 @@ import { useQueries } from '@tanstack/react-query'
 import { useMemo } from 'react'
 import { getDebtPaymentsByPeriod, getDebts } from '@/services/debts'
 import { getFundMovementsByPeriod, getFunds } from '@/services/funds'
+import { getLoans, getRepaymentsByPeriod } from '@/services/loans'
 import { getTransactionsByPeriod, getYearlyTotals } from '@/services/transactions'
-import type { Debt, Fund, TransactionWithCategory } from '@/types/database'
+import type { Debt, Fund, Loan, LoanRepayment, TransactionWithCategory } from '@/types/database'
 import type { MonthPeriod } from '@/utils/dates'
 import { sumAmounts, toCents } from '@/utils/money'
 
@@ -17,7 +18,7 @@ export type CategorySlice = {
 /**
  * Reúne todo lo que el dashboard necesita para un mes.
  *
- * Las cinco consultas se lanzan en paralelo con useQueries. Cada una tiene su
+ * Las consultas se lanzan en paralelo con useQueries. Cada una tiene su
  * propia clave de caché, así que al cambiar de mes solo se vuelven a pedir las
  * que dependen del período: la lista de fondos y deudas, que son totales
  * acumulados, se reutilizan sin ir de nuevo al servidor.
@@ -43,24 +44,48 @@ export function useDashboard(period: MonthPeriod) {
         queryKey: ['debt-payments', period.year, period.month],
         queryFn: () => getDebtPaymentsByPeriod(period),
       },
+      { queryKey: ['loans'], queryFn: getLoans },
+      {
+        queryKey: ['loan-repayments', period.year, period.month],
+        queryFn: () => getRepaymentsByPeriod(period),
+      },
     ],
   })
 
-  const [transactions, yearlyTotals, funds, debts, fundMovements, debtPayments] = results
+  const [
+    transactions,
+    yearlyTotals,
+    funds,
+    debts,
+    fundMovements,
+    debtPayments,
+    loans,
+    loanRepayments,
+  ] = results
 
   const isLoading = results.some((result) => result.isLoading)
   const error = results.find((result) => result.error)?.error ?? null
 
   const summary = useMemo(
-    () =>
-      buildSummary({
+    () => ({
+      ...buildSummary({
         transactions: transactions.data ?? [],
         funds: funds.data ?? [],
         debts: debts.data ?? [],
         fundMovements: fundMovements.data ?? [],
         debtPayments: debtPayments.data ?? [],
       }),
-    [transactions.data, funds.data, debts.data, fundMovements.data, debtPayments.data],
+      ...buildReceivableSummary(loans.data ?? [], loanRepayments.data ?? []),
+    }),
+    [
+      transactions.data,
+      funds.data,
+      debts.data,
+      fundMovements.data,
+      debtPayments.data,
+      loans.data,
+      loanRepayments.data,
+    ],
   )
 
   return {
@@ -71,6 +96,24 @@ export function useDashboard(period: MonthPeriod) {
     yearlyTotals: yearlyTotals.data ?? [],
     funds: funds.data ?? [],
     debts: debts.data ?? [],
+  }
+}
+
+/**
+ * Dinero prestado: lo que falta por cobrar (acumulado) y lo que se cobró en
+ * el mes. Igual que los ahorros, no es ingreso del mes hasta que se cobra,
+ * y aun entonces se muestra aparte para no mezclarlo con el salario.
+ */
+function buildReceivableSummary(loans: Loan[], repayments: LoanRepayment[]) {
+  const receivablePending =
+    loans
+      .filter((loan) => loan.status === 'ACTIVE')
+      .reduce((total, loan) => total + toCents(loan.total_amount) - toCents(loan.received_amount), 0) /
+    100
+
+  return {
+    receivablePending,
+    receivedThisMonth: sumAmounts(repayments.map((repayment) => repayment.amount)),
   }
 }
 

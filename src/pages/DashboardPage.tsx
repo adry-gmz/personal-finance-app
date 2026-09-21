@@ -78,7 +78,7 @@ export function DashboardPage() {
           </div>
 
           {/* Lo acumulado, que no es gasto */}
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
             <SummaryCard
               label="Deudas pendientes"
               amount={summary.pendingDebt}
@@ -87,6 +87,16 @@ export function DashboardPage() {
                 summary.debtPaidThisMonth > 0
                   ? `Pagaste ${formatMoney(summary.debtPaidThisMonth)} este mes`
                   : 'Sin pagos este mes'
+              }
+            />
+            <SummaryCard
+              label="Por cobrar"
+              amount={summary.receivablePending}
+              tone="receivable"
+              caption={
+                summary.receivedThisMonth > 0
+                  ? `Cobraste ${formatMoney(summary.receivedThisMonth)} este mes`
+                  : 'Sin cobros este mes'
               }
             />
             <SummaryCard

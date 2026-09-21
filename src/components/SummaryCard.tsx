@@ -5,7 +5,7 @@ import { formatMoney } from '@/utils/money'
  * index.css. Que un ahorro nunca se vea igual que un gasto es parte del
  * objetivo de la aplicación, no una decoración.
  */
-type Tone = 'income' | 'expense' | 'balance' | 'saving' | 'provision' | 'debt'
+type Tone = 'income' | 'expense' | 'balance' | 'saving' | 'provision' | 'debt' | 'receivable'
 
 const TONES: Record<Tone, { value: string; dot: string }> = {
   income: { value: 'text-income', dot: 'bg-income' },
@@ -14,6 +14,7 @@ const TONES: Record<Tone, { value: string; dot: string }> = {
   saving: { value: 'text-saving', dot: 'bg-saving' },
   provision: { value: 'text-provision', dot: 'bg-provision' },
   debt: { value: 'text-debt', dot: 'bg-debt' },
+  receivable: { value: 'text-receivable', dot: 'bg-receivable' },
 }
 
 export function SummaryCard({
