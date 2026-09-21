@@ -169,8 +169,8 @@ export function TransactionForm({
       <form onSubmit={handleSubmit} className="space-y-4" noValidate>
         {/* Tipo: lo primero que se decide, porque cambia el resto */}
         <div>
-          <span className="block text-sm font-medium text-slate-700">Tipo</span>
-          <div className="mt-1.5 grid grid-cols-2 gap-1 rounded-lg bg-slate-100 p-1">
+          <span className="block text-sm font-medium text-fg-secondary">Tipo</span>
+          <div className="mt-1.5 grid grid-cols-2 gap-1 rounded-lg bg-muted p-1">
             <TypeTab
               active={form.type === 'INCOME'}
               onClick={() => changeType('INCOME')}
@@ -252,13 +252,13 @@ export function TransactionForm({
           disabled={isSaving}
         />
 
-        <label className="flex items-center gap-2.5 text-sm text-slate-700">
+        <label className="flex items-center gap-2.5 text-sm text-fg-secondary">
           <input
             type="checkbox"
             checked={form.isRecurring}
             onChange={(e) => setField('isRecurring', e.target.checked)}
             disabled={isSaving}
-            className="size-4 rounded border-slate-300 text-slate-900 focus:ring-slate-900"
+            className="size-4 accent-primary"
           />
           Se repite cada mes
         </label>
@@ -295,7 +295,7 @@ function TypeTab({
       onClick={onClick}
       aria-pressed={active}
       className={`rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
-        active ? `bg-white shadow-sm ${activeClassName}` : 'text-slate-500 hover:text-slate-900'
+        active ? `bg-raised shadow-sm ${activeClassName}` : 'text-fg-muted hover:text-fg'
       }`}
     >
       {children}

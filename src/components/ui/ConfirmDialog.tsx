@@ -32,15 +32,15 @@ export function ConfirmDialog({
 }) {
   return (
     <Modal isOpen={isOpen} onClose={onClose} title={title}>
-      <p className="text-sm text-slate-600">{message}</p>
+      <p className="text-sm text-fg-secondary">{message}</p>
 
       {detail && (
-        <div className="mt-3 rounded-lg bg-slate-50 px-3 py-2.5 text-sm text-slate-900">
+        <div className="mt-3 rounded-lg bg-muted px-3 py-2.5 text-sm text-fg">
           {detail}
         </div>
       )}
 
-      <p className="mt-3 text-sm text-slate-500">Esta acción no se puede deshacer.</p>
+      <p className="mt-3 text-sm text-fg-muted">Esta acción no se puede deshacer.</p>
 
       {error && (
         <div className="mt-4">

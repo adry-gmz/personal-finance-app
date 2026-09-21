@@ -138,7 +138,7 @@ export function DashboardPage() {
             action={
               <Link
                 to="/transactions"
-                className="text-sm font-medium text-slate-500 transition-colors hover:text-slate-900"
+                className="text-sm font-medium text-fg-muted transition-colors hover:text-fg"
               >
                 Ver todos
               </Link>

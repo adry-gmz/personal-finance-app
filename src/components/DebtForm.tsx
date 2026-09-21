@@ -109,7 +109,7 @@ export function DebtForm({ onClose, debt }: { onClose: () => void; debt?: Debt |
           value={name}
           onChange={(e) => setName(e.target.value)}
           error={fieldErrors.name}
-          placeholder="Lavadora"
+          placeholder="Nombre de la deuda"
           maxLength={80}
           disabled={isSaving}
         />
@@ -151,13 +151,13 @@ export function DebtForm({ onClose, debt }: { onClose: () => void; debt?: Debt |
         />
 
         {isEditing && (
-          <label className="flex items-center gap-2.5 text-sm text-slate-700">
+          <label className="flex items-center gap-2.5 text-sm text-fg-secondary">
             <input
               type="checkbox"
               checked={isCancelled}
               onChange={(e) => setIsCancelled(e.target.checked)}
               disabled={isSaving}
-              className="size-4 rounded border-slate-300"
+              className="size-4 accent-primary"
             />
             Marcar como cancelada
           </label>

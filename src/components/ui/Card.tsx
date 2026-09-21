@@ -13,10 +13,10 @@ export function Card({
   className?: string
 }) {
   return (
-    <section className={`rounded-xl border border-slate-200 bg-white p-5 shadow-sm ${className}`}>
+    <section className={`rounded-xl border border-line bg-surface p-5 shadow-sm ${className}`}>
       {title && (
         <div className="mb-4 flex items-center justify-between gap-3">
-          <h2 className="text-sm font-semibold text-slate-900">{title}</h2>
+          <h2 className="text-sm font-semibold text-fg">{title}</h2>
           {action}
         </div>
       )}
@@ -32,12 +32,12 @@ export function Card({
  * distinguir "no hay nada registrado" de "algo falló".
  */
 export function EmptyState({ children }: { children: React.ReactNode }) {
-  return <p className="py-8 text-center text-sm text-slate-500">{children}</p>
+  return <p className="py-8 text-center text-sm text-fg-muted">{children}</p>
 }
 
 export function LoadingState({ children = 'Cargando…' }: { children?: React.ReactNode }) {
   return (
-    <div className="flex items-center justify-center gap-2 py-8 text-sm text-slate-500">
+    <div className="flex items-center justify-center gap-2 py-8 text-sm text-fg-muted">
       <Spinner className="size-4" />
       {children}
     </div>
@@ -46,7 +46,7 @@ export function LoadingState({ children = 'Cargando…' }: { children?: React.Re
 
 export function ErrorState({ children }: { children: React.ReactNode }) {
   return (
-    <p role="alert" className="py-8 text-center text-sm text-red-600">
+    <p role="alert" className="py-8 text-center text-sm text-red-600 dark:text-red-400">
       {children}
     </p>
   )
@@ -62,7 +62,7 @@ export function ErrorState({ children }: { children: React.ReactNode }) {
 export function ProgressBar({
   percent,
   className = '',
-  barClassName = 'bg-slate-900',
+  barClassName = 'bg-fg',
 }: {
   percent: number
   className?: string
@@ -70,7 +70,7 @@ export function ProgressBar({
 }) {
   return (
     <div
-      className={`h-2 overflow-hidden rounded-full bg-slate-100 ${className}`}
+      className={`h-2 overflow-hidden rounded-full bg-muted ${className}`}
       role="progressbar"
       aria-valuenow={Math.round(percent)}
       aria-valuemin={0}

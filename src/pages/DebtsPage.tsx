@@ -16,7 +16,7 @@ import { formatMoney, progressPercent, sumAmounts, toCents } from '@/utils/money
 const STATUS_LABELS: Record<DebtStatus, { label: string; className: string }> = {
   ACTIVE: { label: 'Activa', className: 'bg-debt/10 text-debt' },
   PAID: { label: 'Pagada', className: 'bg-income/10 text-income' },
-  CANCELLED: { label: 'Cancelada', className: 'bg-slate-100 text-slate-500' },
+  CANCELLED: { label: 'Cancelada', className: 'bg-muted text-fg-muted' },
 }
 
 function pendingOf(debt: Debt): number {
@@ -113,7 +113,7 @@ export function DebtsPage() {
           </div>
 
           <section>
-            <h2 className="mb-3 text-sm font-semibold text-slate-900">Activas</h2>
+            <h2 className="mb-3 text-sm font-semibold text-fg">Activas</h2>
             {active.length === 0 ? (
               <Card>
                 <EmptyState>No tienes deudas pendientes. 🎉</EmptyState>
@@ -129,7 +129,7 @@ export function DebtsPage() {
 
           {closed.length > 0 && (
             <section>
-              <h2 className="mb-3 text-sm font-semibold text-slate-900">Pagadas y canceladas</h2>
+              <h2 className="mb-3 text-sm font-semibold text-fg">Pagadas y canceladas</h2>
               <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
                 {closed.map((debt) => (
                   <DebtCard key={debt.id} debt={debt} {...cardHandlers} />
@@ -179,7 +179,7 @@ export function DebtsPage() {
             <div className="flex justify-between gap-3">
               <span className="truncate">
                 {deletingPayment.description || 'Pago'}
-                <span className="block text-xs text-slate-500">
+                <span className="block text-xs text-fg-muted">
                   {formatDate(deletingPayment.date)}
                 </span>
               </span>
@@ -216,7 +216,7 @@ function DebtCard({
     <Card>
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
-          <h3 className="truncate font-medium text-slate-900">{debt.name}</h3>
+          <h3 className="truncate font-medium text-fg">{debt.name}</h3>
           <span
             className={`mt-1 inline-block rounded-full px-2 py-0.5 text-xs font-medium ${status.className}`}
           >
@@ -230,7 +230,7 @@ function DebtCard({
           <IconButton
             onClick={() => onDelete(debt)}
             label={`Eliminar ${debt.name}`}
-            className="hover:text-red-600"
+            className="hover:text-red-600 dark:hover:text-red-400"
           >
             <TrashIcon className="size-4" />
           </IconButton>
@@ -238,11 +238,11 @@ function DebtCard({
       </div>
 
       <div className="mt-4 flex items-baseline justify-between text-sm">
-        <span className="text-slate-500 tabular-nums">
+        <span className="text-fg-muted tabular-nums">
           {formatMoney(debt.paid_amount)}{' '}
-          <span className="text-slate-400">/ {formatMoney(debt.total_amount)}</span>
+          <span className="text-fg-subtle">/ {formatMoney(debt.total_amount)}</span>
         </span>
-        <span className="text-xs text-slate-500 tabular-nums">{Math.round(percent)}%</span>
+        <span className="text-xs text-fg-muted tabular-nums">{Math.round(percent)}%</span>
       </div>
       <ProgressBar
         percent={percent}
@@ -264,7 +264,7 @@ function DebtCard({
           type="button"
           onClick={() => setShowPayments((open) => !open)}
           aria-expanded={showPayments}
-          className="text-sm font-medium text-slate-500 transition-colors hover:text-slate-900"
+          className="text-sm font-medium text-fg-muted transition-colors hover:text-fg"
         >
           {showPayments ? 'Ocultar pagos' : 'Ver pagos'}
         </button>
@@ -295,22 +295,22 @@ function PaymentHistory({
   if (payments.length === 0) return <EmptyState>Todavía no hay pagos registrados.</EmptyState>
 
   return (
-    <ul className="mt-3 divide-y divide-slate-100 border-t border-slate-100">
+    <ul className="mt-3 divide-y divide-line-subtle border-t border-line-subtle">
       {payments.map((payment) => (
         <li key={payment.id} className="flex items-center gap-3 py-2.5">
-          <span className="w-20 shrink-0 text-xs text-slate-400 tabular-nums">
+          <span className="w-20 shrink-0 text-xs text-fg-subtle tabular-nums">
             {formatDate(payment.date)}
           </span>
-          <span className="min-w-0 flex-1 truncate text-sm text-slate-600">
+          <span className="min-w-0 flex-1 truncate text-sm text-fg-secondary">
             {payment.description || 'Pago'}
           </span>
-          <span className="shrink-0 text-sm font-medium text-slate-900 tabular-nums">
+          <span className="shrink-0 text-sm font-medium text-fg tabular-nums">
             {formatMoney(payment.amount)}
           </span>
           <IconButton
             onClick={() => onDelete(payment)}
             label="Eliminar pago"
-            className="hover:text-red-600"
+            className="hover:text-red-600 dark:hover:text-red-400"
           >
             <TrashIcon className="size-4" />
           </IconButton>
@@ -322,9 +322,9 @@ function PaymentHistory({
 
 function Detail({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-lg bg-slate-50 px-2.5 py-2">
-      <dt className="text-slate-500">{label}</dt>
-      <dd className="mt-0.5 truncate font-medium text-slate-900 tabular-nums">{value}</dd>
+    <div className="rounded-lg bg-muted px-2.5 py-2">
+      <dt className="text-fg-muted">{label}</dt>
+      <dd className="mt-0.5 truncate font-medium text-fg tabular-nums">{value}</dd>
     </div>
   )
 }

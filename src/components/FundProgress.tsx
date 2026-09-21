@@ -28,15 +28,15 @@ export function FundProgress({
         return (
           <li key={fund.id}>
             <div className="flex items-baseline justify-between gap-3 text-sm">
-              <span className="truncate font-medium text-slate-900">{fund.name}</span>
-              <span className="shrink-0 text-slate-500 tabular-nums">
+              <span className="truncate font-medium text-fg">{fund.name}</span>
+              <span className="shrink-0 text-fg-muted tabular-nums">
                 {formatMoney(fund.current_amount)}{' '}
-                <span className="text-slate-400">/ {formatMoney(fund.target_amount)}</span>
+                <span className="text-fg-subtle">/ {formatMoney(fund.target_amount)}</span>
               </span>
             </div>
             <div className="mt-2 flex items-center gap-3">
               <ProgressBar percent={percent} className="flex-1" barClassName={barColor} />
-              <span className="w-9 shrink-0 text-right text-xs text-slate-500 tabular-nums">
+              <span className="w-9 shrink-0 text-right text-xs text-fg-muted tabular-nums">
                 {Math.round(percent)}%
               </span>
             </div>

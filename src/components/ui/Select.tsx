@@ -19,7 +19,7 @@ export function Select({ label, error, hint, className = '', children, ...props 
 
   return (
     <div>
-      <label htmlFor={id} className="block text-sm font-medium text-slate-700">
+      <label htmlFor={id} className="block text-sm font-medium text-fg-secondary">
         {label}
       </label>
       <select
@@ -27,18 +27,18 @@ export function Select({ label, error, hint, className = '', children, ...props 
         id={id}
         aria-invalid={error ? true : undefined}
         aria-describedby={describedBy}
-        className={`mt-1.5 block w-full rounded-lg border-0 bg-white px-3 py-2.5 text-slate-900 ring-1 ring-inset outline-none focus:ring-2 disabled:bg-slate-50 disabled:text-slate-500 ${
-          error ? 'ring-red-300 focus:ring-red-500' : 'ring-slate-200 focus:ring-slate-900'
+        className={`mt-1.5 block w-full rounded-lg border-0 bg-surface px-3 py-2.5 text-fg ring-1 ring-inset outline-none focus:ring-2 disabled:bg-muted disabled:text-fg-muted ${
+          error ? 'ring-red-300 focus:ring-red-500 dark:ring-red-500/50' : 'ring-line focus:ring-primary'
         } ${className}`}
       >
         {children}
       </select>
       {error ? (
-        <p id={`${id}-error`} className="mt-1.5 text-sm text-red-600">
+        <p id={`${id}-error`} className="mt-1.5 text-sm text-red-600 dark:text-red-400">
           {error}
         </p>
       ) : hint ? (
-        <p id={`${id}-hint`} className="mt-1.5 text-sm text-slate-500">
+        <p id={`${id}-hint`} className="mt-1.5 text-sm text-fg-muted">
           {hint}
         </p>
       ) : null}

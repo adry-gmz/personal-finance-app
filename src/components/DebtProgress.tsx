@@ -31,19 +31,19 @@ export function DebtProgress({ debts }: { debts: Debt[] }) {
         return (
           <li key={debt.id}>
             <div className="flex items-baseline justify-between gap-3 text-sm">
-              <span className="truncate font-medium text-slate-900">{debt.name}</span>
-              <span className="shrink-0 text-slate-500 tabular-nums">
+              <span className="truncate font-medium text-fg">{debt.name}</span>
+              <span className="shrink-0 text-fg-muted tabular-nums">
                 {formatMoney(debt.paid_amount)}{' '}
-                <span className="text-slate-400">/ {formatMoney(debt.total_amount)}</span>
+                <span className="text-fg-subtle">/ {formatMoney(debt.total_amount)}</span>
               </span>
             </div>
             <div className="mt-2 flex items-center gap-3">
               <ProgressBar percent={percent} className="flex-1" barClassName="bg-debt" />
-              <span className="w-9 shrink-0 text-right text-xs text-slate-500 tabular-nums">
+              <span className="w-9 shrink-0 text-right text-xs text-fg-muted tabular-nums">
                 {Math.round(percent)}%
               </span>
             </div>
-            <p className="mt-1.5 text-xs text-slate-400">
+            <p className="mt-1.5 text-xs text-fg-subtle">
               Faltan {formatMoney(pending)}
               {debt.due_date && ` · vence el ${formatDate(debt.due_date)}`}
             </p>

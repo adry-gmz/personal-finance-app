@@ -74,9 +74,9 @@ export function DebtPaymentForm({ debt, onClose }: { debt: Debt; onClose: () => 
   return (
     <Modal isOpen onClose={onClose} title={`Pago · ${debt.name}`}>
       <form onSubmit={handleSubmit} className="space-y-4" noValidate>
-        <div className="flex items-baseline justify-between rounded-lg bg-slate-50 px-3 py-2.5 text-sm">
-          <span className="text-slate-500">Saldo pendiente</span>
-          <span className="font-medium text-slate-900 tabular-nums">{formatMoney(pending)}</span>
+        <div className="flex items-baseline justify-between rounded-lg bg-muted px-3 py-2.5 text-sm">
+          <span className="text-fg-muted">Saldo pendiente</span>
+          <span className="font-medium text-fg tabular-nums">{formatMoney(pending)}</span>
         </div>
 
         <div className="grid grid-cols-2 gap-3">
@@ -107,7 +107,7 @@ export function DebtPaymentForm({ debt, onClose }: { debt: Debt; onClose: () => 
           type="button"
           onClick={() => setAmount(pending.toFixed(2))}
           disabled={isSaving}
-          className="text-sm font-medium text-slate-500 transition-colors hover:text-slate-900"
+          className="text-sm font-medium text-fg-muted transition-colors hover:text-fg"
         >
           Pagar el total pendiente
         </button>
