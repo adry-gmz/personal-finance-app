@@ -6,6 +6,7 @@ import { DebtsPage } from '@/pages/DebtsPage'
 import { FundsPage } from '@/pages/FundsPage'
 import { LoginPage } from '@/pages/LoginPage'
 import { NotFoundPage } from '@/pages/NotFoundPage'
+import { LoansPage } from '@/pages/LoansPage'
 import { SettingsPage } from '@/pages/SettingsPage'
 import { TransactionsPage } from '@/pages/TransactionsPage'
 
@@ -29,6 +30,7 @@ export default function App() {
           <Route path="/transactions" element={<TransactionsPage />} />
           <Route path="/debts" element={<DebtsPage />} />
           <Route path="/funds" element={<FundsPage />} />
+          <Route path="/loans" element={<LoansPage />} />
           <Route path="/settings" element={<SettingsPage />} />
         </Route>
       </Route>

@@ -7,6 +7,7 @@ import {
   FundsIcon,
   LogoutIcon,
   MenuIcon,
+  ReceivableIcon,
   SettingsIcon,
   TransactionsIcon,
 } from '@/components/Icons'
@@ -17,6 +18,7 @@ const NAV_ITEMS = [
   { to: '/dashboard', label: 'Dashboard', Icon: DashboardIcon },
   { to: '/transactions', label: 'Movimientos', Icon: TransactionsIcon },
   { to: '/debts', label: 'Deudas', Icon: DebtsIcon },
+  { to: '/loans', label: 'Por cobrar', Icon: ReceivableIcon },
   { to: '/funds', label: 'Fondos', Icon: FundsIcon },
   { to: '/settings', label: 'Ajustes', Icon: SettingsIcon },
 ] as const

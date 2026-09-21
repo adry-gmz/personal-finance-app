@@ -1,14 +1,16 @@
 import { useState } from 'react'
 import { DebtForm } from '@/components/DebtForm'
-import { DEBT_TYPE_LABELS } from '@/utils/labels'
 import { DebtPaymentForm } from '@/components/DebtPaymentForm'
+import { HistoryList } from '@/components/HistoryList'
 import { EditIcon, TrashIcon } from '@/components/Icons'
 import { SummaryCard } from '@/components/SummaryCard'
 import { Button } from '@/components/ui/Button'
 import { Card, EmptyState, ErrorState, LoadingState, ProgressBar } from '@/components/ui/Card'
 import { ConfirmDialog } from '@/components/ui/ConfirmDialog'
+import { DetailTile } from '@/components/ui/DetailTile'
 import { IconButton } from '@/components/ui/IconButton'
 import { PageHeader } from '@/components/ui/PageHeader'
+import { DEBT_TYPE_LABELS } from '@/utils/labels'
 import { useDebtMutations, useDebtPayments, useDebts } from '@/hooks/useDebts'
 import type { Debt, DebtPayment, DebtStatus } from '@/types/database'
 import { formatDate } from '@/utils/dates'
@@ -270,8 +272,8 @@ function DebtCard({
       />
 
       <dl className="mt-4 grid grid-cols-2 gap-2 text-xs sm:grid-cols-4">
-        <Detail label="Pendiente" value={formatMoney(pending)} />
-        <Detail
+        <DetailTile label="Pendiente" value={formatMoney(pending)} />
+        <DetailTile
           label="Cuota"
           value={debt.installment_amount !== null ? formatMoney(debt.installment_amount) : '—'}
           caption={
@@ -280,12 +282,12 @@ function DebtCard({
               : undefined
           }
         />
-        <Detail
+        <DetailTile
           label="Interés"
           value={interest !== null ? formatMoney(interest) : '—'}
           caption={debt.interest_rate !== null ? `${debt.interest_rate}%` : undefined}
         />
-        <Detail label="Vence" value={debt.due_date ? formatDate(debt.due_date) : '—'} />
+        <DetailTile label="Vence" value={debt.due_date ? formatDate(debt.due_date) : '—'} />
       </dl>
 
       <div className="mt-4 flex items-center justify-between gap-3">
@@ -318,43 +320,13 @@ function PaymentHistory({
   onDelete: (payment: DebtPayment) => void
 }) {
   const { data: payments = [], isLoading, error } = useDebtPayments(debtId)
-
-  if (isLoading) return <LoadingState>Cargando pagos…</LoadingState>
-  if (error) return <ErrorState>No se pudo cargar el historial de pagos.</ErrorState>
-  if (payments.length === 0) return <EmptyState>Todavía no hay pagos registrados.</EmptyState>
-
   return (
-    <ul className="mt-3 divide-y divide-line-subtle border-t border-line-subtle">
-      {payments.map((payment) => (
-        <li key={payment.id} className="flex items-center gap-3 py-2.5">
-          <span className="w-20 shrink-0 text-xs text-fg-subtle tabular-nums">
-            {formatDate(payment.date)}
-          </span>
-          <span className="min-w-0 flex-1 truncate text-sm text-fg-secondary">
-            {payment.description || 'Pago'}
-          </span>
-          <span className="shrink-0 text-sm font-medium text-fg tabular-nums">
-            {formatMoney(payment.amount)}
-          </span>
-          <IconButton
-            onClick={() => onDelete(payment)}
-            label="Eliminar pago"
-            className="hover:text-red-600 dark:hover:text-red-400"
-          >
-            <TrashIcon className="size-4" />
-          </IconButton>
-        </li>
-      ))}
-    </ul>
-  )
-}
-
-function Detail({ label, value, caption }: { label: string; value: string; caption?: string }) {
-  return (
-    <div className="rounded-lg bg-muted px-2.5 py-2">
-      <dt className="text-fg-muted">{label}</dt>
-      <dd className="mt-0.5 truncate font-medium text-fg tabular-nums">{value}</dd>
-      {caption && <dd className="truncate text-fg-subtle">{caption}</dd>}
-    </div>
+    <HistoryList
+      items={payments}
+      isLoading={isLoading}
+      error={error}
+      noun="pago"
+      onDelete={onDelete}
+    />
   )
 }

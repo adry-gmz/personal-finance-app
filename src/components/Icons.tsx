@@ -121,3 +121,15 @@ export function TrashIcon(props: IconProps) {
     </Icon>
   )
 }
+
+/** Mano que recibe: dinero que te deben. */
+export function ReceivableIcon(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <circle cx="15" cy="7" r="3" />
+      <path d="M3 14h3l3.5 2H14a1.5 1.5 0 0 0 0-3h-2.5" />
+      <path d="M6 20h9l5.5-4.5a1.5 1.5 0 0 0-2-2.2L15 16" />
+      <path d="M3 13v8" />
+    </Icon>
+  )
+}
