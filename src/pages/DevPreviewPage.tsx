@@ -1,11 +1,10 @@
-import { useQueryClient } from '@tanstack/react-query'
-import { useRef } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { DashboardView } from '@/components/dashboard/DashboardView'
 import { MonthSelector } from '@/components/MonthSelector'
 import { Button } from '@/components/ui/Button'
 import { PageHeader } from '@/components/ui/PageHeader'
 import type { DashboardSummary } from '@/hooks/useDashboard'
+import { queryClient } from '@/lib/queryClient'
 import { usePeriod } from '@/hooks/usePeriod'
 import { FundsPage } from '@/pages/FundsPage'
 import type { Fund, FundMovement, TransactionWithCategory } from '@/types/database'
@@ -25,23 +24,12 @@ export default function DevPreviewPage() {
 /**
  * Fondos con datos de ejemplo.
  *
- * En vez de duplicar la pantalla, se siembra la caché de React Query con
- * datos falsos y se monta la página real: así lo que se revisa es el mismo
- * componente que verá el usuario, no una copia que puede quedar desfasada.
+ * En vez de duplicar la pantalla se monta la página real, con la caché de
+ * React Query ya sembrada (ver el final del archivo): así lo que se revisa
+ * es el mismo componente que verá el usuario, no una copia que puede quedar
+ * desfasada.
  */
 function FundsPreview() {
-  const queryClient = useQueryClient()
-  const seeded = useRef(false)
-
-  // Antes del primer render, para que la página no pase por el estado de carga.
-  if (!seeded.current) {
-    queryClient.setQueryData(['funds'], FUNDS)
-    for (const fund of FUNDS) {
-      queryClient.setQueryData(['fund-movements-for', fund.id], FUND_MOVEMENTS[fund.id] ?? [])
-    }
-    seeded.current = true
-  }
-
   return <FundsPage />
 }
 
@@ -184,3 +172,13 @@ const TRANSACTIONS: TransactionWithCategory[] = [
   tx('e', '2026-09-12', 'Combustible', 20, 'EXPENSE', 'Transporte', '#f97316'),
   tx('f', '2026-09-01', 'Salario mensual', 300, 'INCOME', 'Salario', '#16a34a'),
 ]
+
+/**
+ * Siembra la caché al cargar el módulo, antes de que se monte nada.
+ * El módulo solo se carga al entrar a /dev/preview, y queryClient es el
+ * mismo singleton que usa la aplicación.
+ */
+queryClient.setQueryData(['funds'], FUNDS)
+for (const demoFund of FUNDS) {
+  queryClient.setQueryData(['fund-movements-for', demoFund.id], FUND_MOVEMENTS[demoFund.id] ?? [])
+}
