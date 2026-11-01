@@ -279,6 +279,7 @@ export type Database = {
         // `current_amount` no se incluye: la base de datos revoca su escritura.
         Update: {
           name?: string
+          type?: FundType
           target_amount?: number
           target_date?: string | null
         }

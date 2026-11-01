@@ -1,10 +1,14 @@
+import { useQueryClient } from '@tanstack/react-query'
+import { useRef } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import { DashboardView } from '@/components/dashboard/DashboardView'
 import { MonthSelector } from '@/components/MonthSelector'
 import { Button } from '@/components/ui/Button'
 import { PageHeader } from '@/components/ui/PageHeader'
 import type { DashboardSummary } from '@/hooks/useDashboard'
 import { usePeriod } from '@/hooks/usePeriod'
-import type { Fund, TransactionWithCategory } from '@/types/database'
+import { FundsPage } from '@/pages/FundsPage'
+import type { Fund, FundMovement, TransactionWithCategory } from '@/types/database'
 
 /**
  * Vista previa del dashboard con datos de ejemplo.
@@ -14,6 +18,34 @@ import type { Fund, TransactionWithCategory } from '@/types/database'
  * de producción.
  */
 export default function DevPreviewPage() {
+  const [searchParams] = useSearchParams()
+  return searchParams.get('vista') === 'fondos' ? <FundsPreview /> : <DashboardPreview />
+}
+
+/**
+ * Fondos con datos de ejemplo.
+ *
+ * En vez de duplicar la pantalla, se siembra la caché de React Query con
+ * datos falsos y se monta la página real: así lo que se revisa es el mismo
+ * componente que verá el usuario, no una copia que puede quedar desfasada.
+ */
+function FundsPreview() {
+  const queryClient = useQueryClient()
+  const seeded = useRef(false)
+
+  // Antes del primer render, para que la página no pase por el estado de carga.
+  if (!seeded.current) {
+    queryClient.setQueryData(['funds'], FUNDS)
+    for (const fund of FUNDS) {
+      queryClient.setQueryData(['fund-movements-for', fund.id], FUND_MOVEMENTS[fund.id] ?? [])
+    }
+    seeded.current = true
+  }
+
+  return <FundsPage />
+}
+
+function DashboardPreview() {
   const { period, setPeriod } = usePeriod()
 
   return (
@@ -93,6 +125,30 @@ const FUNDS: Fund[] = [
   fund('3', 'Laptop', 'SAVING', 250, 800),
   fund('4', 'Emprendimiento', 'SAVING', 120, 1000),
 ]
+
+function movement(
+  id: string,
+  fundId: string,
+  type: FundMovement['type'],
+  amount: number,
+  date: string,
+  description: string,
+): FundMovement {
+  return { id, fund_id: fundId, type, amount, date, description, created_at: '' }
+}
+
+const FUND_MOVEMENTS: Record<string, FundMovement[]> = {
+  '1': [
+    movement('m1', '1', 'CONTRIBUTION', 60, '2026-09-02', 'Aporte mensual'),
+    movement('m2', '1', 'CONTRIBUTION', 60, '2026-08-02', 'Aporte mensual'),
+    movement('m3', '1', 'CONTRIBUTION', 60, '2026-07-02', 'Aporte mensual'),
+  ],
+  '2': [
+    movement('m4', '2', 'CONTRIBUTION', 40, '2026-09-03', 'Aporte mensual'),
+    movement('m5', '2', 'WITHDRAWAL', 20, '2026-09-15', 'Cambio de teclado'),
+    movement('m6', '2', 'CONTRIBUTION', 40, '2026-08-03', 'Aporte mensual'),
+  ],
+}
 
 function tx(
   id: string,

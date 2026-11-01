@@ -153,7 +153,7 @@ lanzan consultas directamente.
 - [x] **Fase 4** — Dashboard con selector de mes y gráficos
 - [x] **Fase 5** — Registro de ingresos y gastos (CRUD)
 - [x] **Fase 6** — Deudas y pagos
-- [ ] **Fase 7** — Provisiones y ahorros
+- [x] **Fase 7** — Provisiones y ahorros
 - [ ] **Fase 8** — Resumen anual
 
 ## Futuras mejoras
